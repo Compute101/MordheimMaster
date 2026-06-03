@@ -1,0 +1,604 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&display=swap');
+
+/* ─── Reset ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ─── Design tokens ──────────────────────────────────── */
+:root {
+  --parchment:       #f0e2b8;
+  --parchment-light: #f7edd4;
+  --parchment-dark:  #d9c88a;
+  --parchment-band:  #e0cc90;
+  --ink:             #1a0800;
+  --ink-mid:         #3d1a00;
+  --border:          #5a3410;
+  --border-light:    #8b6030;
+  --red:             #7a1515;
+  --gold:            #9a7820;
+  --shadow:          rgba(0, 0, 0, 0.6);
+
+  --font-title:  'Cinzel Decorative', 'Cinzel', serif;
+  --font-head:   'Cinzel', serif;
+  --font-body:   'IM Fell English', Georgia, serif;
+}
+
+/* ─── Page ───────────────────────────────────────────── */
+body {
+  background: #1a0800;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 40px,
+      rgba(90,52,16,0.08) 40px,
+      rgba(90,52,16,0.08) 80px
+    );
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--ink);
+}
+
+.app {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+/* ─── Warband list screen ────────────────────────────── */
+.warband-list-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  padding: 32px 0;
+}
+
+.list-title {
+  text-align: center;
+  color: var(--parchment-light);
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+}
+
+.list-title-main {
+  font-family: var(--font-title);
+  font-size: clamp(2rem, 6vw, 3.6rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--parchment);
+}
+
+.list-title-sub {
+  font-family: var(--font-head);
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--parchment-dark);
+  margin-top: 4px;
+}
+
+.empty-state {
+  font-family: var(--font-head);
+  font-size: 1.1rem;
+  color: var(--parchment-dark);
+  font-style: italic;
+  letter-spacing: 0.05em;
+}
+
+.warband-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.warband-card {
+  background: var(--parchment);
+  border: 2px solid var(--border);
+  padding: 16px 18px;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 3px 3px 8px var(--shadow);
+}
+
+.warband-card::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px solid var(--border-light);
+  pointer-events: none;
+}
+
+.warband-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 5px 5px 14px var(--shadow);
+}
+
+.warband-card-name {
+  font-family: var(--font-head);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.warband-card-type {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--ink-mid);
+  margin-bottom: 10px;
+}
+
+.warband-card-stats {
+  display: flex;
+  gap: 14px;
+  font-family: var(--font-head);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-mid);
+  text-transform: uppercase;
+}
+
+.delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--red);
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 4px;
+  opacity: 0.5;
+  transition: opacity 0.15s;
+}
+
+.delete-btn:hover { opacity: 1; }
+
+.create-btn {
+  font-family: var(--font-head);
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--border);
+  color: var(--parchment-light);
+  border: 2px solid var(--border-light);
+  padding: 10px 28px;
+  cursor: pointer;
+  transition: background 0.15s;
+  box-shadow: 2px 2px 6px var(--shadow);
+}
+
+.create-btn:hover { background: var(--border-light); }
+
+/* ─── Roster Sheet ───────────────────────────────────── */
+.roster-sheet {
+  background: var(--parchment);
+  border: 3px solid var(--border);
+  box-shadow: 0 0 0 6px #0e0400, 4px 4px 20px var(--shadow);
+  position: relative;
+}
+
+/* Double-rule inner frame */
+.roster-sheet::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid var(--border-light);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Sheet title banner ── */
+.sheet-title {
+  text-align: center;
+  padding: 18px 12px 12px;
+  border-bottom: 3px double var(--border);
+  background: linear-gradient(180deg, var(--parchment-dark) 0%, var(--parchment) 100%);
+  position: relative;
+  z-index: 1;
+}
+
+.sheet-title-main {
+  font-family: var(--font-title);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.sheet-title-sub {
+  font-family: var(--font-head);
+  font-size: clamp(0.7rem, 1.5vw, 0.9rem);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  margin-top: 4px;
+}
+
+/* ── Warband info band ── */
+.warband-info {
+  padding: 12px 18px;
+  border-bottom: 2px solid var(--border);
+  background: var(--parchment-light);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.warband-field-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 28px;
+  align-items: flex-end;
+}
+
+.warband-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 160px;
+}
+
+.warband-field.narrow { flex: 0 0 110px; }
+
+.warband-field label {
+  font-family: var(--font-head);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+}
+
+/* ── Underline fields ── */
+.field-underline {
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid var(--ink-mid);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--ink);
+  outline: none;
+  padding: 1px 2px;
+  width: 100%;
+}
+
+.field-underline:focus { border-bottom-color: var(--ink); }
+
+.field-underline.wide { min-width: 180px; }
+
+/* ── Section banner (HEROES etc.) ── */
+.section-banner {
+  font-family: var(--font-head);
+  font-size: clamp(0.85rem, 1.5vw, 1rem);
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  text-align: center;
+  background: var(--border);
+  color: var(--parchment-light);
+  padding: 5px 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Heroes grid ── */
+.heroes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-bottom: 2px solid var(--border);
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 700px) {
+  .heroes-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── Hero Card ──────────────────────────────────────── */
+.hero-card {
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  background: var(--parchment);
+  min-width: 0;
+}
+
+.hero-card:nth-child(even) { border-right: none; }
+.hero-card:nth-last-child(-n+2) { border-bottom: none; }
+
+/* ── Hero header ── */
+.hero-header {
+  background: var(--parchment-band);
+  border-bottom: 1.5px solid var(--border);
+  padding: 6px 10px 8px;
+}
+
+.hero-number {
+  font-family: var(--font-head);
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--border);
+  margin-bottom: 4px;
+}
+
+.hero-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.field-group label {
+  font-family: var(--font-head);
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+}
+
+/* ── Stats table ── */
+.stats-section {
+  padding: 6px 10px;
+  border-bottom: 1.5px solid var(--border);
+  overflow-x: auto;
+}
+
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-head);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.stats-table th {
+  background: var(--border);
+  color: var(--parchment-light);
+  padding: 3px 4px;
+  text-align: center;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.stats-table td {
+  border: 1px solid var(--border-light);
+  padding: 0;
+  text-align: center;
+}
+
+.stat-row-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-mid);
+  background: var(--parchment-dark) !important;
+  padding: 2px 5px !important;
+  font-style: italic;
+  white-space: nowrap;
+  border: 1px solid var(--border-light) !important;
+}
+
+.stat-input {
+  width: 100%;
+  min-width: 26px;
+  text-align: center;
+  background: transparent;
+  border: none;
+  font-family: var(--font-head);
+  font-size: 0.78rem;
+  color: var(--ink);
+  padding: 3px 1px;
+  outline: none;
+}
+
+.stat-input:focus {
+  background: rgba(255,255,255,0.45);
+}
+
+/* ── XP section ── */
+.xp-section {
+  padding: 6px 10px;
+  border-bottom: 1.5px solid var(--border);
+}
+
+.section-label {
+  font-family: var(--font-head);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  margin-bottom: 5px;
+}
+
+.xp-tracker {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.xp-boxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.xp-box {
+  width: 13px;
+  height: 13px;
+  border: 1.5px solid var(--border-light);
+  cursor: pointer;
+  background: transparent;
+  transition: background 0.08s;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.xp-box:hover { background: var(--parchment-dark); }
+
+.xp-box.filled {
+  background: var(--ink);
+}
+
+/* Advance threshold marker: red right-border */
+.xp-box.threshold {
+  border-right-color: var(--red);
+  border-right-width: 2.5px;
+  margin-right: 2px;
+}
+
+.xp-total {
+  font-family: var(--font-head);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: var(--ink-mid);
+}
+
+/* ── List sections (Equipment, Skills, etc.) ── */
+.list-section {
+  padding: 5px 10px 7px;
+  border-bottom: 1px solid var(--parchment-dark);
+}
+
+.list-section:last-child { border-bottom: none; }
+
+.list-section-title {
+  font-family: var(--font-head);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  margin-bottom: 4px;
+}
+
+.list-items {
+  list-style: none;
+  margin-bottom: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.list-items li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+  line-height: 1.3;
+  gap: 4px;
+}
+
+.list-items li span {
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  color: var(--red);
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0 2px;
+  opacity: 0.45;
+  flex-shrink: 0;
+  transition: opacity 0.12s;
+}
+
+.remove-btn:hover { opacity: 1; }
+
+.list-add-row {
+  display: flex;
+  gap: 4px;
+}
+
+.list-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed var(--border-light);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--ink);
+  outline: none;
+  padding: 1px 2px;
+  min-width: 0;
+}
+
+.list-input::placeholder { color: var(--parchment-dark); font-style: italic; }
+.list-input:focus { border-bottom-color: var(--ink-mid); }
+
+.add-btn {
+  background: none;
+  border: 1px solid var(--border-light);
+  color: var(--ink-mid);
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 1px 6px;
+  font-family: var(--font-head);
+  transition: background 0.12s, color 0.12s;
+}
+
+.add-btn:hover {
+  background: var(--border);
+  color: var(--parchment-light);
+}
+
+/* ── Sheet footer ── */
+.sheet-footer {
+  padding: 12px 18px;
+  border-top: 2px solid var(--border);
+  background: var(--parchment-band);
+  display: flex;
+  justify-content: flex-start;
+  position: relative;
+  z-index: 1;
+}
+
+.back-btn {
+  font-family: var(--font-head);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: none;
+  border: 1.5px solid var(--border);
+  color: var(--ink-mid);
+  padding: 6px 16px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.back-btn:hover {
+  background: var(--border);
+  color: var(--parchment-light);
+}
+
+/* ─── Print styles ────────────────────────────────────── */
+@media print {
+  body { background: white; }
+  .app { max-width: none; padding: 0; }
+  .sheet-footer, .back-btn, .create-btn { display: none; }
+  .roster-sheet { box-shadow: none; border: 1px solid #000; }
+  .roster-sheet::before { display: none; }
+  .heroes-grid { page-break-inside: avoid; }
+  .add-btn, .remove-btn, .list-add-row { display: none; }
+}
