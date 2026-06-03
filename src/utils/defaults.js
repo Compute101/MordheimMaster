@@ -22,6 +22,25 @@ export function createHero() {
   }
 }
 
+// Henchmen advance as a group; thresholds differ from heroes
+export const HENCHMAN_XP_THRESHOLDS = [2, 4, 6, 8]
+export const MAX_HENCHMAN_XP_BOXES = 8
+export const MAX_MODELS = 10
+
+export function createHenchmanGroup() {
+  return {
+    id: crypto.randomUUID(),
+    name: '',
+    type: '',
+    models: 1,       // current number alive in group
+    stats: Object.fromEntries(STATS.map(s => [s, ''])),
+    xp: 0,
+    equipment: [],
+    skills: [],
+    injuries: [],
+  }
+}
+
 export function createWarband() {
   return {
     id: crypto.randomUUID(),
@@ -31,5 +50,6 @@ export function createWarband() {
     wyrdstone: 0,
     rating: 0,
     heroes: Array.from({ length: 6 }, createHero),
+    henchmen: Array.from({ length: 4 }, createHenchmanGroup),
   }
 }
