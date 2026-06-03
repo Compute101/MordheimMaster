@@ -1,11 +1,26 @@
 import HeroCard from './HeroCard'
+import HenchmanCard from './HenchmanCard'
+import { createHenchmanGroup } from '../utils/defaults'
 
 export default function RosterSheet({ warband, onUpdate, onBack }) {
   const set = (field, value) => onUpdate({ ...warband, [field]: value })
 
-  const updateHero = (index, updatedHero) => {
-    const heroes = warband.heroes.map((h, i) => i === index ? updatedHero : h)
+  const updateHero = (index, updated) => {
+    const heroes = warband.heroes.map((h, i) => i === index ? updated : h)
     onUpdate({ ...warband, heroes })
+  }
+
+  const updateHenchman = (index, updated) => {
+    const henchmen = warband.henchmen.map((g, i) => i === index ? updated : g)
+    onUpdate({ ...warband, henchmen })
+  }
+
+  const addHenchmanGroup = () => {
+    onUpdate({ ...warband, henchmen: [...warband.henchmen, createHenchmanGroup()] })
+  }
+
+  const removeHenchmanGroup = (index) => {
+    onUpdate({ ...warband, henchmen: warband.henchmen.filter((_, i) => i !== index) })
   }
 
   return (
@@ -79,6 +94,25 @@ export default function RosterSheet({ warband, onUpdate, onBack }) {
             onUpdate={updated => updateHero(i, updated)}
           />
         ))}
+      </div>
+
+      {/* ── Henchmen Section ── */}
+      <div className="section-banner">Henchmen</div>
+      <div className="heroes-grid henchmen-grid">
+        {warband.henchmen.map((group, i) => (
+          <HenchmanCard
+            key={group.id}
+            group={group}
+            groupNumber={i + 1}
+            onUpdate={updated => updateHenchman(i, updated)}
+            onRemove={() => removeHenchmanGroup(i)}
+          />
+        ))}
+      </div>
+      <div className="add-group-row">
+        <button className="add-group-btn" onClick={addHenchmanGroup}>
+          + Add Henchman Group
+        </button>
       </div>
 
       {/* ── Footer ── */}
