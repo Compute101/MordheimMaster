@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, master, claude/mordheim-army-lists-YeAU7]
+    branches: [main, master]
   workflow_dispatch:
 
 permissions:
