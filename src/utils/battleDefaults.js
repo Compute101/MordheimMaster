@@ -1,0 +1,126 @@
+export const SCENARIOS = [
+  'Occupy', 'Skirmish', 'Wyrdstone Hunt', 'Breakthrough',
+  'In the Shadow of the Horned Rat', 'Death Match', 'The Gauntlet',
+  'Defend the Find', 'Chance Encounter', 'Rescue',
+]
+
+export const ACTIONS = [
+  { key: 'move',   label: 'Move',   needsTarget: false, needsOutcome: false },
+  { key: 'run',    label: 'Run',    needsTarget: false, needsOutcome: false },
+  { key: 'charge', label: 'Charge', needsTarget: true,  needsOutcome: true  },
+  { key: 'fight',  label: 'Fight',  needsTarget: true,  needsOutcome: true  },
+  { key: 'shoot',  label: 'Shoot',  needsTarget: true,  needsOutcome: true  },
+  { key: 'throw',  label: 'Throw',  needsTarget: true,  needsOutcome: true  },
+  { key: 'goad',   label: 'Goad',   needsTarget: true,  needsOutcome: true  },
+  { key: 'flee',   label: 'Flee',   needsTarget: false, needsOutcome: false },
+  { key: 'rout',   label: 'Rout',   needsTarget: false, needsOutcome: false },
+  { key: 'rally',  label: 'Rally',  needsTarget: false, needsOutcome: false },
+  { key: 'other',  label: 'Other…', needsTarget: false, needsOutcome: false, isOther: true },
+]
+
+export const OUTCOMES = {
+  charge: ['Charged', 'Failed Charge'],
+  fight:  ['Miss', 'Knock Down', 'Stunned', 'Out of Action', 'Crit KD', 'Crit Stun', 'Crit OOA'],
+  shoot:  ['Miss', 'Knock Down', 'Stunned', 'Out of Action'],
+  throw:  ['Miss', 'Knock Down', 'Stunned', 'Out of Action'],
+  goad:   ['Goaded', 'Goad Failed'],
+}
+
+export const INJURY_RESULTS = [
+  'Fine', 'Full Recovery', 'Dead', 'Misses Next Game',
+  'Chest Wound', 'Arm Wound', 'Leg Wound', 'Blinded in One Eye',
+  'Hand Injury', 'Old Battle Wound', 'Madness', 'Nervous Condition',
+  'Horrible Scars', 'Robbed', 'Captured', 'Sold to the Pits',
+]
+
+export function makeEventNote({ actorName, actionKey, targetName, outcome }) {
+  const t = targetName ? ` ${targetName}` : ''
+  switch (actionKey) {
+    case 'move':   return `${actorName} moved`
+    case 'run':    return `${actorName} ran`
+    case 'charge':
+      return outcome === 'Failed Charge'
+        ? `${actorName} failed to charge${t}`
+        : `${actorName} charged${t}`
+    case 'fight':  return `${actorName} attacked${t} — ${outcome}`
+    case 'shoot':  return `${actorName} shot at${t} — ${outcome}`
+    case 'throw':  return `${actorName} threw at${t} — ${outcome}`
+    case 'goad':
+      return outcome === 'Goad Failed'
+        ? `${actorName} failed to goad${t}`
+        : `${actorName} goaded${t}`
+    case 'flee':   return `${actorName} fled`
+    case 'rout':   return `${actorName} routed`
+    case 'rally':  return `${actorName} rallied`
+    default:       return outcome || `${actorName} acted`
+  }
+}
+
+export function createBattle({ scenario, warband0, warband1 }) {
+  return {
+    id: crypto.randomUUID(),
+    date: new Date().toISOString(),
+    scenario,
+    warbands: [warband0, warband1],
+    turns: [],
+    currentTurn: 1,
+    currentWarbandIndex: 0,
+    postBattle: {
+      result: null,
+      injuries: [],
+      xpGains: [],
+      skills: [],
+      notes: '',
+    },
+    completed: false,
+  }
+}
+
+export function generateBattleText(battle) {
+  const lines = []
+  lines.push(battle.scenario || 'Battle')
+  lines.push('')
+
+  const maxTurn = battle.turns.length
+    ? Math.max(...battle.turns.map(t => t.turnNumber))
+    : 0
+
+  for (let t = 1; t <= maxTurn; t++) {
+    for (let w = 0; w <= 1; w++) {
+      const turn = battle.turns.find(x => x.turnNumber === t && x.warbandIndex === w)
+      if (!turn || turn.events.length === 0) continue
+      lines.push(`${battle.warbands[w].name} turn ${t}`)
+      turn.events.forEach(e => lines.push(e.note))
+      lines.push('')
+    }
+  }
+
+  const pb = battle.postBattle
+  const hasPostBattle = pb.result || pb.injuries.length || pb.xpGains.length || pb.notes
+
+  if (hasPostBattle) {
+    lines.push('Post Battle')
+    if (pb.result === 'warband0') lines.push(`${battle.warbands[0].name} won`)
+    else if (pb.result === 'warband1') lines.push(`${battle.warbands[1].name} won`)
+    else if (pb.result === 'draw') lines.push('Draw')
+
+    pb.injuries.forEach(({ warriorName, result }) => {
+      lines.push(`${warriorName} — ${result}`)
+    })
+
+    pb.xpGains.forEach(({ warriorName, amount }) => {
+      if (!amount) return
+      const skillEntry = pb.skills.find(s => s.warriorName === warriorName)
+      let line = `${warriorName} +${amount} XP`
+      if (skillEntry?.skill) line += `, skill: ${skillEntry.skill}`
+      lines.push(line)
+    })
+
+    if (pb.notes) {
+      lines.push('')
+      lines.push(pb.notes)
+    }
+  }
+
+  return lines.join('\n')
+}

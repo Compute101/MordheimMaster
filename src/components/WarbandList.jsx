@@ -1,4 +1,4 @@
-export default function WarbandList({ warbands, onSelect, onCreate, onDelete }) {
+export default function WarbandList({ warbands, onSelect, onCreate, onDelete, onBattleNotes }) {
   return (
     <div className="warband-list-page">
       <div className="list-title">
@@ -33,9 +33,14 @@ export default function WarbandList({ warbands, onSelect, onCreate, onDelete }) 
         </div>
       )}
 
-      <button className="create-btn" onClick={onCreate}>
-        + New Warband
-      </button>
+      <div className="list-action-row">
+        <button className="create-btn" onClick={onCreate}>
+          + New Warband
+        </button>
+        <button className="battle-notes-btn" onClick={onBattleNotes}>
+          ⚔ Battle Notes
+        </button>
+      </div>
     </div>
   )
 }

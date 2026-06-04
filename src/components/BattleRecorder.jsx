@@ -1,0 +1,278 @@
+import { useState } from 'react'
+import { ACTIONS, OUTCOMES, makeEventNote } from '../utils/battleDefaults'
+
+const INITIAL_ACTION = { phase: null, actor: null, actionKey: null, target: null, otherText: '' }
+
+function addEventToTurn(battle, event) {
+  const { currentTurn, currentWarbandIndex } = battle
+  const idx = battle.turns.findIndex(
+    t => t.turnNumber === currentTurn && t.warbandIndex === currentWarbandIndex
+  )
+  if (idx >= 0) {
+    const turns = battle.turns.map((t, i) =>
+      i === idx ? { ...t, events: [...t.events, event] } : t
+    )
+    return { ...battle, turns }
+  }
+  const newTurn = {
+    id: crypto.randomUUID(),
+    turnNumber: currentTurn,
+    warbandIndex: currentWarbandIndex,
+    events: [event],
+  }
+  return { ...battle, turns: [...battle.turns, newTurn] }
+}
+
+export default function BattleRecorder({ battle, onChange, onEndBattle }) {
+  const [as, setAs] = useState(INITIAL_ACTION)
+  const [logOpen, setLogOpen] = useState(false)
+
+  const wb0 = battle.warbands[0]
+  const wb1 = battle.warbands[1]
+  const activeWbName = battle.warbands[battle.currentWarbandIndex].name
+
+  const selectWarrior = (name, wbIdx) => {
+    setAs({ ...INITIAL_ACTION, phase: 'action', actor: { name, wbIdx } })
+  }
+
+  const selectAction = (action) => {
+    if (action.isOther) {
+      setAs(prev => ({ ...prev, phase: 'other', actionKey: 'other', otherText: '' }))
+      return
+    }
+    if (!action.needsTarget && !action.needsOutcome) {
+      commitEvent({ actionKey: action.key, target: null, outcome: null })
+      return
+    }
+    if (action.needsTarget) {
+      setAs(prev => ({ ...prev, phase: 'target', actionKey: action.key }))
+    }
+  }
+
+  const selectTarget = (name, wbIdx) => {
+    const action = ACTIONS.find(a => a.key === as.actionKey)
+    if (action?.needsOutcome) {
+      setAs(prev => ({ ...prev, phase: 'outcome', target: { name, wbIdx } }))
+    } else {
+      commitEvent({ actionKey: as.actionKey, target: { name, wbIdx }, outcome: null })
+    }
+  }
+
+  const skipTarget = () => {
+    const action = ACTIONS.find(a => a.key === as.actionKey)
+    if (action?.needsOutcome) {
+      setAs(prev => ({ ...prev, phase: 'outcome', target: null }))
+    } else {
+      commitEvent({ actionKey: as.actionKey, target: null, outcome: null })
+    }
+  }
+
+  const selectOutcome = (outcome) => {
+    commitEvent({ actionKey: as.actionKey, target: as.target, outcome })
+  }
+
+  const commitOther = () => {
+    if (!as.otherText.trim()) return
+    const event = {
+      id: crypto.randomUUID(),
+      actorName: as.actor.name,
+      actorWbIdx: as.actor.wbIdx,
+      actionKey: 'other',
+      targetName: null,
+      outcome: null,
+      note: as.otherText.trim(),
+    }
+    onChange(addEventToTurn(battle, event))
+    setAs(INITIAL_ACTION)
+  }
+
+  const commitEvent = ({ actionKey, target, outcome }) => {
+    const note = makeEventNote({
+      actorName: as.actor.name,
+      actionKey,
+      targetName: target?.name || null,
+      outcome,
+    })
+    const event = {
+      id: crypto.randomUUID(),
+      actorName: as.actor.name,
+      actorWbIdx: as.actor.wbIdx,
+      actionKey,
+      targetName: target?.name || null,
+      outcome,
+      note,
+    }
+    onChange(addEventToTurn(battle, event))
+    setAs(INITIAL_ACTION)
+  }
+
+  const handleEndTurn = () => {
+    setAs(INITIAL_ACTION)
+    const nextWbIdx = battle.currentWarbandIndex === 0 ? 1 : 0
+    const nextTurn = battle.currentWarbandIndex === 1 ? battle.currentTurn + 1 : battle.currentTurn
+    onChange({ ...battle, currentWarbandIndex: nextWbIdx, currentTurn: nextTurn })
+  }
+
+  const totalEvents = battle.turns.reduce((n, t) => n + t.events.length, 0)
+
+  const renderWarriorCol = (wb, wbIdx) => {
+    const isActive = battle.currentWarbandIndex === wbIdx
+    return (
+      <div className={`rec-warband-col${isActive ? ' is-active' : ''}`}>
+        <div className="rec-col-title">
+          {isActive && <span className="rec-active-dot" />}
+          {wb.name}
+        </div>
+        <div className="rec-warrior-btns">
+          {wb.warriors.length === 0 && (
+            <span className="rec-no-warriors">No warriors</span>
+          )}
+          {wb.warriors.map((w, i) => (
+            <button
+              key={i}
+              className={`rec-warrior-btn${as.actor?.name === w.name && as.actor?.wbIdx === wbIdx ? ' selected' : ''}`}
+              onClick={() => selectWarrior(w.name, wbIdx)}
+            >
+              {w.name}
+            </button>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  const otherWbWarriors = as.actor
+    ? (as.actor.wbIdx === 0 ? wb1.warriors : wb0.warriors)
+    : []
+  const bothWbWarriors = as.actor
+    ? [
+        ...wb0.warriors.map(w => ({ ...w, wbIdx: 0 })),
+        ...wb1.warriors.map(w => ({ ...w, wbIdx: 1 })),
+      ]
+    : []
+
+  return (
+    <div className="bn-page">
+      <div className="rec-header">
+        <div className="rec-turn-info">
+          <span className="rec-turn-num">Turn {battle.currentTurn}</span>
+          <span className="rec-turn-sep">—</span>
+          <span className="rec-turn-wb">{activeWbName}</span>
+        </div>
+        <div className="rec-header-btns">
+          <button className="rec-btn rec-btn--turn" onClick={handleEndTurn}>
+            End Turn →
+          </button>
+          <button className="rec-btn rec-btn--end" onClick={onEndBattle}>
+            End Battle
+          </button>
+        </div>
+      </div>
+
+      <div className="rec-warriors-grid">
+        {renderWarriorCol(wb0, 0)}
+        <div className="rec-col-divider" />
+        {renderWarriorCol(wb1, 1)}
+      </div>
+
+      {as.phase && (
+        <div className="rec-action-panel">
+          <div className="rec-ap-actor">
+            <span className="rec-ap-acting">Acting:</span>
+            <strong>{as.actor.name}</strong>
+            <span className="rec-ap-wb">{battle.warbands[as.actor.wbIdx].name}</span>
+            <button className="rec-ap-cancel" onClick={() => setAs(INITIAL_ACTION)}>✕</button>
+          </div>
+
+          {as.phase === 'action' && (
+            <div className="rec-ap-section">
+              <div className="rec-ap-label">Choose action:</div>
+              <div className="rec-ap-btns">
+                {ACTIONS.map(a => (
+                  <button key={a.key} className="rec-ap-btn" onClick={() => selectAction(a)}>
+                    {a.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {as.phase === 'target' && (
+            <div className="rec-ap-section">
+              <div className="rec-ap-label">
+                {as.actionKey === 'goad' ? 'Goad target:' : 'Target:'}
+              </div>
+              <div className="rec-ap-btns">
+                {(as.actionKey === 'goad' ? bothWbWarriors : otherWbWarriors.map(w => ({ ...w, wbIdx: as.actor.wbIdx === 0 ? 1 : 0 }))).map((w, i) => (
+                  <button key={i} className="rec-ap-btn" onClick={() => selectTarget(w.name, w.wbIdx)}>
+                    {w.name}
+                  </button>
+                ))}
+                <button className="rec-ap-btn rec-ap-btn--skip" onClick={skipTarget}>
+                  Skip
+                </button>
+              </div>
+            </div>
+          )}
+
+          {as.phase === 'outcome' && (
+            <div className="rec-ap-section">
+              <div className="rec-ap-label">
+                {as.target ? `vs ${as.target.name} —` : ''} Outcome:
+              </div>
+              <div className="rec-ap-btns">
+                {(OUTCOMES[as.actionKey] || []).map(o => (
+                  <button key={o} className="rec-ap-btn" onClick={() => selectOutcome(o)}>
+                    {o}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {as.phase === 'other' && (
+            <div className="rec-ap-section">
+              <div className="rec-ap-label">Custom note:</div>
+              <div className="rec-ap-other-row">
+                <input
+                  className="rec-ap-other-input"
+                  placeholder="What happened…"
+                  value={as.otherText}
+                  autoFocus
+                  onChange={e => setAs(prev => ({ ...prev, otherText: e.target.value }))}
+                  onKeyDown={e => e.key === 'Enter' && commitOther()}
+                />
+                <button className="rec-ap-btn" onClick={commitOther}>Log</button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      <div className="rec-log">
+        <button className="rec-log-toggle" onClick={() => setLogOpen(o => !o)}>
+          {logOpen ? '▲' : '▼'} Battle Log ({totalEvents} event{totalEvents !== 1 ? 's' : ''})
+        </button>
+        {logOpen && (
+          <div className="rec-log-content">
+            {battle.turns.length === 0 && (
+              <div className="rec-log-empty">No events yet.</div>
+            )}
+            {[...battle.turns]
+              .sort((a, b) => a.turnNumber - b.turnNumber || a.warbandIndex - b.warbandIndex)
+              .map(turn => (
+                <div key={turn.id} className="rec-turn-group">
+                  <div className="rec-turn-group-title">
+                    Turn {turn.turnNumber} — {battle.warbands[turn.warbandIndex].name}
+                  </div>
+                  {turn.events.map(e => (
+                    <div key={e.id} className="rec-log-event">{e.note}</div>
+                  ))}
+                </div>
+              ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

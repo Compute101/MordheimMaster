@@ -684,6 +684,979 @@ body {
   color: var(--parchment-light);
 }
 
+/* ─── Warband list action row ─────────────────────────── */
+.list-action-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.battle-notes-btn {
+  font-family: var(--font-head);
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--red);
+  color: var(--parchment-light);
+  border: 2px solid #a02020;
+  padding: 10px 28px;
+  cursor: pointer;
+  transition: background 0.15s;
+  box-shadow: 2px 2px 6px var(--shadow);
+}
+
+.battle-notes-btn:hover { background: #9a1a1a; }
+
+/* ─── Battle Notes shared layout ─────────────────────── */
+.bn-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--parchment);
+  border: 3px solid var(--border);
+  box-shadow: 0 0 0 6px #0e0400, 4px 4px 20px var(--shadow);
+}
+
+.bn-topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: linear-gradient(180deg, var(--parchment-dark) 0%, var(--parchment) 100%);
+  border-bottom: 3px double var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.bn-topbar-title {
+  font-family: var(--font-head);
+  font-size: clamp(1rem, 3vw, 1.3rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  flex: 1;
+  text-align: center;
+}
+
+.bn-copy-btn {
+  font-family: var(--font-head);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: none;
+  border: 1.5px solid var(--border);
+  color: var(--ink-mid);
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.bn-copy-btn:hover { background: var(--border); color: var(--parchment-light); }
+
+.bn-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+
+.bn-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bn-section-title {
+  font-family: var(--font-head);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--parchment-light);
+  background: var(--border);
+  padding: 4px 10px;
+  align-self: flex-start;
+}
+
+/* ─── Battle Setup ────────────────────────────────────── */
+.bn-scenario-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.bn-scenario-btn {
+  font-family: var(--font-head);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  background: var(--parchment-light);
+  border: 1.5px solid var(--border-light);
+  color: var(--ink-mid);
+  padding: 7px 13px;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.bn-scenario-btn:hover { background: var(--parchment-dark); }
+.bn-scenario-btn.active {
+  background: var(--border);
+  color: var(--parchment-light);
+  border-color: var(--border);
+}
+
+.bn-name-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid var(--ink-mid);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--ink);
+  outline: none;
+  padding: 3px 2px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.bn-name-input:focus { border-bottom-color: var(--ink); }
+
+.bn-slots-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 560px) {
+  .bn-slots-row { grid-template-columns: 1fr; }
+}
+
+.bn-warband-slot {
+  background: var(--parchment-light);
+  border: 1.5px solid var(--border-light);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bn-slot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bn-slot-label {
+  font-family: var(--font-head);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--border);
+}
+
+.bn-link-btn {
+  background: none;
+  border: none;
+  font-family: var(--font-head);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--border-light);
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.bn-link-btn:hover { color: var(--border); }
+
+.bn-selected-roster {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bn-selected-name {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: var(--ink);
+}
+
+.bn-pick-label {
+  font-family: var(--font-head);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+}
+
+.bn-roster-pick { display: flex; flex-direction: column; gap: 6px; }
+
+.bn-roster-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.bn-roster-chip {
+  font-family: var(--font-head);
+  font-size: 0.72rem;
+  background: var(--parchment);
+  border: 1.5px solid var(--border-light);
+  color: var(--ink);
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.bn-roster-chip:hover { background: var(--parchment-dark); }
+.bn-roster-chip.active { background: var(--border); color: var(--parchment-light); border-color: var(--border); }
+
+.bn-chip-type {
+  font-style: italic;
+  font-size: 0.65rem;
+  opacity: 0.7;
+  margin-left: 3px;
+}
+
+.bn-warriors-list { display: flex; flex-direction: column; gap: 6px; }
+
+.bn-no-warriors {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--parchment-dark);
+}
+
+.bn-warrior-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.bn-warrior-tag {
+  font-family: var(--font-head);
+  font-size: 0.72rem;
+  background: var(--parchment-dark);
+  border: 1px solid var(--border-light);
+  color: var(--ink);
+  padding: 3px 6px 3px 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bn-warrior-remove {
+  background: none;
+  border: none;
+  color: var(--red);
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0 1px;
+  opacity: 0.5;
+  transition: opacity 0.1s;
+}
+
+.bn-warrior-remove:hover { opacity: 1; }
+
+.bn-add-warrior-row {
+  display: flex;
+  gap: 5px;
+}
+
+.bn-warrior-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed var(--border-light);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--ink);
+  outline: none;
+  padding: 2px 2px;
+  min-width: 0;
+}
+
+.bn-warrior-input::placeholder { color: var(--parchment-dark); font-style: italic; }
+.bn-warrior-input:focus { border-bottom-color: var(--ink-mid); }
+
+.bn-add-warrior-btn {
+  background: none;
+  border: 1px solid var(--border-light);
+  color: var(--ink-mid);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-family: var(--font-head);
+  padding: 2px 8px;
+  transition: background 0.12s;
+}
+
+.bn-add-warrior-btn:hover { background: var(--border); color: var(--parchment-light); }
+
+.bn-begin-row {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0 16px;
+}
+
+.bn-begin-btn {
+  font-family: var(--font-head);
+  font-size: 1rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: var(--border);
+  color: var(--parchment-light);
+  border: 2px solid var(--border-light);
+  padding: 12px 36px;
+  cursor: pointer;
+  transition: background 0.15s;
+  box-shadow: 2px 2px 6px var(--shadow);
+}
+
+.bn-begin-btn:hover:not(:disabled) { background: var(--border-light); }
+.bn-begin-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ─── Battle Recorder ─────────────────────────────────── */
+.rec-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--border);
+  color: var(--parchment-light);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.rec-turn-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-head);
+}
+
+.rec-turn-num {
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--parchment-light);
+}
+
+.rec-turn-sep {
+  color: var(--parchment-dark);
+  font-size: 1rem;
+}
+
+.rec-turn-wb {
+  font-size: clamp(0.85rem, 2.5vw, 1rem);
+  font-style: italic;
+  color: var(--parchment);
+}
+
+.rec-header-btns {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.rec-btn {
+  font-family: var(--font-head);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1.5px solid var(--border-light);
+  cursor: pointer;
+  padding: 7px 12px;
+  transition: background 0.12s;
+  white-space: nowrap;
+}
+
+.rec-btn--turn {
+  background: var(--parchment-dark);
+  color: var(--ink);
+}
+
+.rec-btn--turn:hover { background: var(--parchment); }
+
+.rec-btn--end {
+  background: var(--red);
+  color: var(--parchment-light);
+  border-color: #a02020;
+}
+
+.rec-btn--end:hover { background: #8a1010; }
+
+/* ── Warrior columns ── */
+.rec-warriors-grid {
+  display: flex;
+  border-bottom: 2px solid var(--border);
+  min-height: 100px;
+}
+
+.rec-warband-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  gap: 6px;
+  min-width: 0;
+}
+
+.rec-warband-col.is-active {
+  background: rgba(240, 226, 184, 0.5);
+}
+
+.rec-col-divider {
+  width: 2px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.rec-col-title {
+  font-family: var(--font-head);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--border);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.rec-active-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--red);
+  flex-shrink: 0;
+}
+
+.rec-warrior-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.rec-no-warriors {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-style: italic;
+  color: var(--border-light);
+}
+
+.rec-warrior-btn {
+  font-family: var(--font-head);
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+  background: var(--parchment-light);
+  border: 1.5px solid var(--border-light);
+  color: var(--ink);
+  padding: 7px 10px;
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s;
+  min-height: 36px;
+  text-align: left;
+}
+
+.rec-warrior-btn:hover { background: var(--parchment-dark); }
+.rec-warrior-btn.selected {
+  background: var(--border);
+  color: var(--parchment-light);
+  border-color: var(--border);
+}
+
+/* ── Action panel ── */
+.rec-action-panel {
+  border-bottom: 2px solid var(--border);
+  background: var(--parchment-light);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.rec-ap-actor {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px;
+  background: var(--parchment-band);
+  border-bottom: 1px solid var(--border-light);
+  font-family: var(--font-head);
+  font-size: 0.8rem;
+}
+
+.rec-ap-acting {
+  color: var(--ink-mid);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.rec-ap-actor strong {
+  color: var(--ink);
+  font-size: 0.9rem;
+}
+
+.rec-ap-wb {
+  color: var(--border-light);
+  font-size: 0.7rem;
+  font-style: italic;
+}
+
+.rec-ap-cancel {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--red);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 2px 5px;
+  opacity: 0.6;
+  transition: opacity 0.1s;
+}
+
+.rec-ap-cancel:hover { opacity: 1; }
+
+.rec-ap-section {
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px solid var(--parchment-dark);
+}
+
+.rec-ap-section:first-of-type { border-top: none; }
+
+.rec-ap-label {
+  font-family: var(--font-head);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+}
+
+.rec-ap-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.rec-ap-btn {
+  font-family: var(--font-head);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  background: var(--parchment);
+  border: 1.5px solid var(--border-light);
+  color: var(--ink);
+  padding: 8px 13px;
+  cursor: pointer;
+  min-height: 38px;
+  transition: background 0.1s, color 0.1s;
+}
+
+.rec-ap-btn:hover { background: var(--border); color: var(--parchment-light); }
+
+.rec-ap-btn--skip {
+  color: var(--border-light);
+  border-style: dashed;
+}
+
+.rec-ap-other-row {
+  display: flex;
+  gap: 6px;
+}
+
+.rec-ap-other-input {
+  flex: 1;
+  background: var(--parchment);
+  border: 1.5px solid var(--border-light);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--ink);
+  outline: none;
+  padding: 6px 8px;
+  min-width: 0;
+}
+
+.rec-ap-other-input:focus { border-color: var(--border); }
+
+/* ── Battle log ── */
+.rec-log {
+  margin-top: auto;
+  border-top: 2px solid var(--border);
+}
+
+.rec-log-toggle {
+  width: 100%;
+  text-align: left;
+  background: var(--parchment-band);
+  border: none;
+  font-family: var(--font-head);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  padding: 9px 14px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.rec-log-toggle:hover { background: var(--parchment-dark); }
+
+.rec-log-content {
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 8px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rec-log-empty {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--border-light);
+}
+
+.rec-turn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.rec-turn-group-title {
+  font-family: var(--font-head);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--border);
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--parchment-dark);
+}
+
+.rec-log-event {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--ink);
+  padding-left: 10px;
+  line-height: 1.4;
+}
+
+.rec-log-event::before {
+  content: '•';
+  margin-right: 5px;
+  color: var(--border-light);
+}
+
+/* ─── Post Battle ─────────────────────────────────────── */
+.pb-result-btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pb-result-btn {
+  font-family: var(--font-head);
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  background: var(--parchment-light);
+  border: 2px solid var(--border-light);
+  color: var(--ink);
+  padding: 9px 16px;
+  cursor: pointer;
+  transition: background 0.12s;
+  flex: 1;
+  min-width: 120px;
+}
+
+.pb-result-btn:hover { background: var(--parchment-dark); }
+.pb-result-btn.active { background: var(--border); color: var(--parchment-light); border-color: var(--border); }
+
+.pb-warrior-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pb-warrior-row {
+  background: var(--parchment-light);
+  border: 1px solid var(--border-light);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pb-warrior-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.pb-warrior-name {
+  font-family: var(--font-head);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.pb-warrior-wb {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--border-light);
+}
+
+.pb-row-section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.pb-row-label {
+  font-family: var(--font-head);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+}
+
+.pb-injury-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.pb-injury-btn {
+  font-family: var(--font-head);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  background: var(--parchment);
+  border: 1.5px solid var(--border-light);
+  color: var(--ink);
+  padding: 6px 10px;
+  cursor: pointer;
+  min-height: 34px;
+  transition: background 0.1s;
+}
+
+.pb-injury-btn:hover { background: var(--parchment-dark); }
+.pb-injury-btn.active { background: var(--border); color: var(--parchment-light); border-color: var(--border); }
+.pb-injury-btn--more { color: var(--border-light); border-style: dashed; font-size: 0.68rem; }
+
+.pb-xp-skill-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pb-xp-part, .pb-skill-part {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.pb-xp-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.pb-xp-btn {
+  font-family: var(--font-head);
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: var(--parchment);
+  border: 1.5px solid var(--border-light);
+  color: var(--ink);
+  padding: 6px 10px;
+  cursor: pointer;
+  min-height: 34px;
+  min-width: 38px;
+  transition: background 0.1s;
+}
+
+.pb-xp-btn:hover { background: var(--parchment-dark); }
+.pb-xp-btn.active { background: var(--gold); color: var(--parchment-light); border-color: var(--gold); }
+
+.pb-skill-row {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.pb-skill-tag {
+  font-family: var(--font-head);
+  font-size: 0.72rem;
+  background: var(--parchment-dark);
+  border: 1px solid var(--border-light);
+  color: var(--ink);
+  padding: 3px 7px;
+  white-space: nowrap;
+}
+
+.pb-skill-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed var(--border-light);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--ink);
+  outline: none;
+  padding: 2px 2px;
+  min-width: 80px;
+}
+
+.pb-skill-input::placeholder { color: var(--parchment-dark); font-style: italic; }
+.pb-skill-input:focus { border-bottom-color: var(--ink-mid); }
+
+.pb-add-skill-btn {
+  background: none;
+  border: 1px solid var(--border-light);
+  color: var(--ink-mid);
+  cursor: pointer;
+  font-family: var(--font-head);
+  font-size: 0.9rem;
+  padding: 2px 7px;
+  transition: background 0.1s;
+}
+
+.pb-add-skill-btn:hover { background: var(--border); color: var(--parchment-light); }
+
+.pb-notes-area {
+  width: 100%;
+  min-height: 120px;
+  background: var(--parchment);
+  border: 1.5px solid var(--border-light);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--ink);
+  padding: 8px 10px;
+  outline: none;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.pb-notes-area:focus { border-color: var(--border); }
+.pb-notes-area::placeholder { color: var(--parchment-dark); font-style: italic; }
+
+/* ─── Battle History ──────────────────────────────────── */
+.bn-empty { color: var(--parchment-dark); padding: 12px 0; }
+
+.bn-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bn-history-item {
+  background: var(--parchment-light);
+  border: 2px solid var(--border-light);
+  padding: 12px 16px;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.12s, box-shadow 0.12s;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+}
+
+.bn-history-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 3px 4px 10px rgba(0,0,0,0.4);
+}
+
+.bn-history-scenario {
+  font-family: var(--font-head);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.05em;
+  margin-bottom: 3px;
+}
+
+.bn-history-matchup {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--ink-mid);
+  margin-bottom: 6px;
+}
+
+.bn-vs {
+  font-family: var(--font-head);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--border-light);
+  margin: 0 4px;
+}
+
+.bn-history-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-family: var(--font-head);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--border-light);
+}
+
+.bn-winner-tag {
+  background: var(--gold);
+  color: var(--parchment-light);
+  padding: 1px 6px;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+}
+
+.bn-new-battle-btn { margin-top: 6px; }
+
+/* ─── Battle view (text output) ──────────────────────── */
+.bn-battle-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-family: var(--font-head);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--border-light);
+  padding: 4px 0;
+  border-bottom: 1px solid var(--parchment-dark);
+}
+
+.bn-winner {
+  background: var(--gold);
+  color: var(--parchment-light);
+  padding: 1px 8px;
+  font-size: 0.65rem;
+}
+
+.bn-battle-text {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--ink);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: var(--parchment-light);
+  border: 1px solid var(--parchment-dark);
+  padding: 14px 16px;
+  margin: 0;
+}
+
 /* ─── Print styles ────────────────────────────────────── */
 @media print {
   body { background: white; }
