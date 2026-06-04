@@ -2,10 +2,10 @@ import { MAX_MODELS } from '../utils/defaults'
 
 export default function ModelTracker({ models, onChange }) {
   const handleClick = (index) => {
-    if (index + 1 === models) {
-      onChange(index)          // shrink group by 1
-    } else if (index >= models) {
-      onChange(index + 1)      // grow group to this slot
+    if (index < models) {
+      onChange(models - 1)     // any filled box removes one model
+    } else {
+      onChange(index + 1)      // any empty box fills up to that slot
     }
   }
 
