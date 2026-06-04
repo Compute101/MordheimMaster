@@ -1,4 +1,4 @@
-export default function WarbandList({ warbands, onSelect, onCreate, onDelete }) {
+export default function WarbandList({ warbands, onSelect, onCreate, onDelete, onBattleNotes, onHouseRules }) {
   return (
     <div className="warband-list-page">
       <div className="list-title">
@@ -33,9 +33,21 @@ export default function WarbandList({ warbands, onSelect, onCreate, onDelete }) 
         </div>
       )}
 
-      <button className="create-btn" onClick={onCreate}>
-        + New Warband
-      </button>
+      <div className="list-action-row">
+        <button className="create-btn" onClick={onCreate}>
+          + New Warband
+        </button>
+        <button className="battle-notes-btn" onClick={onBattleNotes}>
+          ⚔ Battle Notes
+        </button>
+        <button className="house-rules-btn" onClick={onHouseRules}>
+          ⚖ House Rules
+        </button>
+      </div>
+
+      <div className="list-rules-note">
+        Rules reference: <a href="https://mordheimer.net" target="_blank" rel="noreferrer">mordheimer.net</a>
+      </div>
     </div>
   )
 }
