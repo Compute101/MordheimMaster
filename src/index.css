@@ -1059,6 +1059,12 @@ body {
   color: var(--parchment);
 }
 
+.rec-turn-pregame {
+  font-style: italic;
+  letter-spacing: 0.04em;
+  color: var(--parchment-dark);
+}
+
 .rec-header-btns {
   display: flex;
   gap: 8px;

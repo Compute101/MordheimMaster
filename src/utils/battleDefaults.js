@@ -8,6 +8,7 @@ export const ACTIONS = [
   { key: 'move',           label: 'Move',           needsTarget: false, needsOutcome: false },
   { key: 'run',            label: 'Run',            needsTarget: false, needsOutcome: false },
   { key: 'crawl',          label: 'Crawl Away',     needsTarget: false, needsOutcome: false },
+  { key: 'standup',        label: 'Stand Up',       needsTarget: false, needsOutcome: false },
   { key: 'climb',          label: 'Climb / Vault',  needsTarget: false, needsOutcome: true  },
   { key: 'charge',         label: 'Charge',         needsTarget: true,  needsOutcome: true  },
   { key: 'fight',          label: 'Fight',          needsTarget: true,  needsOutcome: true  },
@@ -19,6 +20,7 @@ export const ACTIONS = [
   { key: 'broken',         label: 'Broken',         needsTarget: false, needsOutcome: false },
   { key: 'rout',           label: 'Voluntary Rout', needsTarget: false, needsOutcome: false },
   { key: 'rally',          label: 'Rally',          needsTarget: false, needsOutcome: false },
+  { key: 'explore',        label: 'Explore',        needsTarget: false, needsOutcome: false, isExplore: true },
   { key: 'other',          label: 'Other…',         needsTarget: false, needsOutcome: false, isOther: true },
 ]
 
@@ -60,6 +62,8 @@ export function makeEventNote({ actorName, actionKey, targetName, outcome }) {
         ? `${actorName} failed to goad${t}`
         : `${actorName} goaded${t}`
     case 'crawl':  return `${actorName} crawled away`
+    case 'standup': return `${actorName} stood up`
+    case 'explore': return `${actorName} explored`
     case 'climb':
       if (outcome === 'Climbed') return `${actorName} climbed`
       if (outcome === 'Vault Failed') return `${actorName} failed to vault`
@@ -82,8 +86,8 @@ export function createBattle({ scenario, warband0, warband1 }) {
     scenario,
     warbands: [warband0, warband1],
     turns: [],
-    currentTurn: 1,
-    currentWarbandIndex: 0,
+    currentTurn: 0,          // 0 = pre-game phase
+    currentWarbandIndex: -1, // -1 = pre-game (no active warband)
     postBattle: {
       result: null,
       injuries: [],
@@ -100,8 +104,16 @@ export function generateBattleText(battle) {
   lines.push(battle.scenario || 'Battle')
   lines.push('')
 
-  const maxTurn = battle.turns.length
-    ? Math.max(...battle.turns.map(t => t.turnNumber))
+  const pregame = battle.turns.find(t => t.turnNumber === 0)
+  if (pregame?.events.length) {
+    lines.push('Pre-game')
+    pregame.events.forEach(e => lines.push(e.actorName === null ? `  [${e.note}]` : e.note))
+    lines.push('')
+  }
+
+  const battleTurns = battle.turns.filter(t => t.turnNumber > 0)
+  const maxTurn = battleTurns.length
+    ? Math.max(...battleTurns.map(t => t.turnNumber))
     : 0
 
   for (let t = 1; t <= maxTurn; t++) {

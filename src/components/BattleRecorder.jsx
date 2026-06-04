@@ -31,7 +31,8 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
 
   const wb0 = battle.warbands[0]
   const wb1 = battle.warbands[1]
-  const activeWbName = battle.warbands[battle.currentWarbandIndex].name
+  const isPregame = battle.currentTurn === 0
+  const activeWbName = isPregame ? null : battle.warbands[battle.currentWarbandIndex]?.name
 
   const selectWarrior = (name, wbIdx) => {
     setAs({ ...INITIAL_ACTION, phase: 'action', actor: { name, wbIdx } })
@@ -40,6 +41,10 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
   const selectAction = (action) => {
     if (action.isOther) {
       setAs(prev => ({ ...prev, phase: 'other', actionKey: 'other', otherText: '' }))
+      return
+    }
+    if (action.isExplore) {
+      setAs(prev => ({ ...prev, phase: 'explore', actionKey: 'explore', otherText: '' }))
       return
     }
     if (!action.needsTarget && !action.needsOutcome) {
@@ -93,6 +98,21 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
     setAs(INITIAL_ACTION)
   }
 
+  const commitExplore = () => {
+    const loc = as.otherText.trim()
+    const event = {
+      id: crypto.randomUUID(),
+      actorName: as.actor.name,
+      actorWbIdx: as.actor.wbIdx,
+      actionKey: 'explore',
+      targetName: null,
+      outcome: null,
+      note: loc ? `${as.actor.name} explored ${loc}` : `${as.actor.name} explored`,
+    }
+    onChange(addEventToTurn(battle, event))
+    setAs(INITIAL_ACTION)
+  }
+
   const commitEvent = ({ actionKey, target, outcome }) => {
     const note = makeEventNote({
       actorName: as.actor.name,
@@ -133,9 +153,13 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
     setAs(INITIAL_ACTION)
     setTurnNoteOpen(false)
     setTurnNote('')
-    const nextWbIdx = battle.currentWarbandIndex === 0 ? 1 : 0
-    const nextTurn = battle.currentWarbandIndex === 1 ? battle.currentTurn + 1 : battle.currentTurn
-    onChange({ ...battle, currentWarbandIndex: nextWbIdx, currentTurn: nextTurn })
+    if (isPregame) {
+      onChange({ ...battle, currentTurn: 1, currentWarbandIndex: 0 })
+    } else {
+      const nextWbIdx = battle.currentWarbandIndex === 0 ? 1 : 0
+      const nextTurn = battle.currentWarbandIndex === 1 ? battle.currentTurn + 1 : battle.currentTurn
+      onChange({ ...battle, currentWarbandIndex: nextWbIdx, currentTurn: nextTurn })
+    }
   }
 
   const totalEvents = battle.turns.reduce((n, t) => n + t.events.length, 0)
@@ -180,24 +204,32 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
     <div className="bn-page">
       <div className="rec-header">
         <div className="rec-turn-info">
-          <span className="rec-turn-num">Turn {battle.currentTurn}</span>
-          <span className="rec-turn-sep">—</span>
-          <span className="rec-turn-wb">{activeWbName}</span>
+          {isPregame ? (
+            <span className="rec-turn-num rec-turn-pregame">Pre-game</span>
+          ) : (
+            <>
+              <span className="rec-turn-num">Turn {battle.currentTurn}</span>
+              <span className="rec-turn-sep">—</span>
+              <span className="rec-turn-wb">{activeWbName}</span>
+            </>
+          )}
         </div>
         <div className="rec-header-btns">
           <button
             className={`rec-btn rec-btn--note${turnNoteOpen ? ' active' : ''}`}
             onClick={() => { setTurnNoteOpen(o => !o); setAs(INITIAL_ACTION) }}
-            title="Add a flavour note for this turn"
+            title="Add a note for this phase"
           >
             📝
           </button>
           <button className="rec-btn rec-btn--turn" onClick={handleEndTurn}>
-            End Turn →
+            {isPregame ? 'Begin Turn 1 →' : 'End Turn →'}
           </button>
-          <button className="rec-btn rec-btn--end" onClick={onEndBattle}>
-            End Battle
-          </button>
+          {!isPregame && (
+            <button className="rec-btn rec-btn--end" onClick={onEndBattle}>
+              End Battle
+            </button>
+          )}
         </div>
       </div>
 
@@ -211,7 +243,9 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
         <div className="rec-action-panel rec-turn-note-panel">
           <div className="rec-ap-actor">
             <span className="rec-ap-acting">Turn note</span>
-            <span className="rec-ap-wb">— {battle.warbands[battle.currentWarbandIndex].name} turn {battle.currentTurn}</span>
+            <span className="rec-ap-wb">
+              {isPregame ? '— Pre-game' : `— ${activeWbName} turn ${battle.currentTurn}`}
+            </span>
             <button className="rec-ap-cancel" onClick={() => { setTurnNoteOpen(false); setTurnNote('') }}>✕</button>
           </div>
           <div className="rec-ap-section">
@@ -301,6 +335,23 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
               </div>
             </div>
           )}
+
+          {as.phase === 'explore' && (
+            <div className="rec-ap-section">
+              <div className="rec-ap-label">What / where explored:</div>
+              <div className="rec-ap-other-row">
+                <input
+                  className="rec-ap-other-input"
+                  placeholder="e.g. Brewery, Rocky Hill, Tower, Boyar's house…"
+                  value={as.otherText}
+                  autoFocus
+                  onChange={e => setAs(prev => ({ ...prev, otherText: e.target.value }))}
+                  onKeyDown={e => e.key === 'Enter' && commitExplore()}
+                />
+                <button className="rec-ap-btn" onClick={commitExplore}>Log</button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -318,7 +369,9 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
               .map(turn => (
                 <div key={turn.id} className="rec-turn-group">
                   <div className="rec-turn-group-title">
-                    Turn {turn.turnNumber} — {battle.warbands[turn.warbandIndex].name}
+                    {turn.turnNumber === 0
+                      ? 'Pre-game'
+                      : `Turn ${turn.turnNumber} — ${battle.warbands[turn.warbandIndex]?.name || ''}`}
                   </div>
                   {turn.events.map(e => (
                     <div key={e.id} className={`rec-log-event${e.actorName === null ? ' rec-log-event--note' : ''}`}>
