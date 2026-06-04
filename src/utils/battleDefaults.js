@@ -85,11 +85,12 @@ export function makeEventNote({ actorName, actionKey, targetName, outcome }) {
   }
 }
 
-export function createBattle({ scenario, warband0, warband1 }) {
+export function createBattle({ scenario, warband0, warband1, houseRules }) {
   return {
     id: crypto.randomUUID(),
     date: new Date().toISOString(),
     scenario,
+    houseRules: houseRules || '',
     warbands: [warband0, warband1],
     turns: [],
     currentTurn: 0,          // 0 = pre-game phase
@@ -120,9 +121,14 @@ export function generateBattleText(battle) {
   }
 
   const pregame = battle.turns.find(t => t.turnNumber === 0)
-  if (pregame?.events.length) {
+  const hasHouseRules = battle.houseRules?.trim()
+  if (hasHouseRules || pregame?.events.length) {
     lines.push('Pre-game')
-    pregame.events.forEach(e => lines.push(e.actorName === null ? `  [${e.note}]` : e.note))
+    if (hasHouseRules) {
+      lines.push(battle.houseRules.trim())
+      if (pregame?.events.length) lines.push('')
+    }
+    pregame?.events.forEach(e => lines.push(e.actorName === null ? `  [${e.note}]` : e.note))
     lines.push('')
   }
 

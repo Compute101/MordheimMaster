@@ -121,7 +121,7 @@ function WarbandSlot({ index, warbands, slot, onChange }) {
   )
 }
 
-export default function BattleSetup({ warbands, onBegin, onBack }) {
+export default function BattleSetup({ warbands, houseRules, onBegin, onBack }) {
   const [scenario, setScenario] = useState('')
   const [customScenario, setCustomScenario] = useState('')
   const [slots, setSlots] = useState([
@@ -141,6 +141,7 @@ export default function BattleSetup({ warbands, onBegin, onBack }) {
       scenario: effectiveScenario,
       warband0: slots[0],
       warband1: slots[1],
+      houseRules: houseRules || '',
     })
     onBegin(battle)
   }

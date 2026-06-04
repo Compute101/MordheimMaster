@@ -90,7 +90,7 @@ function BattleHistory({ battles, onNew, onView, onDelete, onBack }) {
   )
 }
 
-export default function BattleNotes({ warbands, onBack }) {
+export default function BattleNotes({ warbands, houseRules, onBack }) {
   const [battles, setBattles] = useLocalStorage('mordheim-battles', [])
   const [phase, setPhase] = useState('history')
   const [activeBattle, setActiveBattle] = useState(null)
@@ -142,6 +142,7 @@ export default function BattleNotes({ warbands, onBack }) {
     return (
       <BattleSetup
         warbands={warbands}
+        houseRules={houseRules}
         onBegin={handleBegin}
         onBack={() => setPhase('history')}
       />
