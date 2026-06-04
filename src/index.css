@@ -289,6 +289,33 @@ body {
   z-index: 1;
 }
 
+.section-banner--collapsible {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  width: 100%;
+  border: none;
+  cursor: pointer;
+}
+
+.section-banner--collapsible:hover { filter: brightness(1.15); }
+
+.section-banner__chevron {
+  display: inline-block;
+  width: 0.55em;
+  height: 0.55em;
+  border-right: 2px solid var(--parchment-light);
+  border-bottom: 2px solid var(--parchment-light);
+  transform: rotate(45deg) translateY(-0.1em);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.section-banner--collapsed .section-banner__chevron {
+  transform: rotate(-135deg) translateY(-0.1em);
+}
+
 /* ── Heroes grid ── */
 .heroes-grid {
   display: grid;
