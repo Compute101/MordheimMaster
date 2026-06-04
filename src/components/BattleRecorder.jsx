@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { ACTIONS, OUTCOMES, makeEventNote } from '../utils/battleDefaults'
+import { ACTIONS, OUTCOMES, CRITICAL_TABLES, makeEventNote } from '../utils/battleDefaults'
 
-const INITIAL_ACTION = { phase: null, actor: null, actionKey: null, target: null, otherText: '' }
+const INITIAL_ACTION = { phase: null, actor: null, actionKey: null, target: null, otherText: '', critTable: null }
+const CRIT_FIGHT_TABLES = ['bladed', 'bludgeoning', 'thrusting', 'unarmed']
 
 function addEventToTurn(battle, event) {
   const { currentTurn, currentWarbandIndex } = battle
@@ -108,6 +109,22 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
       targetName: null,
       outcome: null,
       note: loc ? `${as.actor.name} explored ${loc}` : `${as.actor.name} explored`,
+    }
+    onChange(addEventToTurn(battle, event))
+    setAs(INITIAL_ACTION)
+  }
+
+  const commitCrit = (result) => {
+    const targetText = as.target ? ` on ${as.target.name}` : ''
+    const note = `${as.actor.name} crit${targetText} — ${result.name}: ${result.effect}`
+    const event = {
+      id: crypto.randomUUID(),
+      actorName: as.actor.name,
+      actorWbIdx: as.actor.wbIdx,
+      actionKey: as.actionKey,
+      targetName: as.target?.name || null,
+      outcome: `Crit: ${result.name}`,
+      note,
     }
     onChange(addEventToTurn(battle, event))
     setAs(INITIAL_ACTION)
@@ -320,6 +337,69 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
                 {(OUTCOMES[as.actionKey] || []).map(o => (
                   <button key={o} className="rec-ap-btn" onClick={() => selectOutcome(o)}>
                     {o}
+                  </button>
+                ))}
+                {['fight', 'diving-charge', 'shoot', 'throw'].includes(as.actionKey) && (
+                  <button
+                    className="rec-ap-btn rec-ap-btn--crit"
+                    onClick={() => {
+                      const autoTable = (as.actionKey === 'shoot' || as.actionKey === 'throw') ? 'missile' : null
+                      setAs(prev => ({ ...prev, phase: autoTable ? 'crit-result' : 'crit-table', critTable: autoTable }))
+                    }}
+                  >
+                    Critical Hit →
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {as.phase === 'crit-table' && (
+            <div className="rec-ap-section">
+              <div className="rec-ap-label">Critical hit — weapon type:</div>
+              <div className="rec-ap-btns">
+                {CRIT_FIGHT_TABLES.map(key => {
+                  const table = CRITICAL_TABLES[key]
+                  return (
+                    <button
+                      key={key}
+                      className="rec-ap-btn rec-ap-btn--table"
+                      onClick={() => setAs(prev => ({ ...prev, phase: 'crit-result', critTable: key }))}
+                    >
+                      <span className="rec-btn-table-label">{table.label}</span>
+                      <span className="rec-btn-table-sub">{table.subtitle}</span>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {as.phase === 'crit-result' && (
+            <div className="rec-ap-section">
+              <div className="rec-ap-label">
+                {CRITICAL_TABLES[as.critTable]?.label} critical — roll result:
+                {CRIT_FIGHT_TABLES.includes(as.critTable) && (
+                  <button
+                    className="rec-ap-back-link"
+                    onClick={() => setAs(prev => ({ ...prev, phase: 'crit-table', critTable: null }))}
+                  >
+                    ← change
+                  </button>
+                )}
+              </div>
+              <div className="rec-ap-crit-results">
+                {(CRITICAL_TABLES[as.critTable]?.results || []).map(r => (
+                  <button
+                    key={r.name}
+                    className="rec-ap-btn--crit-result"
+                    onClick={() => commitCrit(r)}
+                  >
+                    <span className="rec-crit-range">{r.range}</span>
+                    <div className="rec-crit-info">
+                      <span className="rec-crit-name">{r.name}</span>
+                      <span className="rec-crit-effect">{r.effect}</span>
+                    </div>
                   </button>
                 ))}
               </div>

@@ -1,8 +1,7 @@
 export const SCENARIOS = [
-  'Occupy', 'Skirmish', 'Wyrdstone Hunt', 'Breakthrough',
-  'In the Shadow of the Horned Rat', 'Death Match', 'The Gauntlet',
-  'Defend the Find', 'Chance Encounter', 'Rescue', 'Hidden Treasure',
-  'Surprise Attack',
+  'Defend the Find', 'Skirmish', 'Wyrdstone Hunt', 'Breakthrough',
+  'Street Fight', 'Occupy', 'Hidden Treasure', 'Chance Encounter', 'Surprise Attack',
+  'In the Shadow of the Horned Rat', 'Death Match', 'The Gauntlet', 'Rescue',
 ]
 
 export const ACTIONS = [
@@ -30,7 +29,7 @@ export const OUTCOMES = {
   climb:  ['Climbed', 'Vault Failed', 'Fell — Fine', 'Fell — Stunned', 'Fell — OOA'],
   charge: ['Charged', 'Failed Charge'],
   'diving-charge': ['Diving Charged', 'Failed Dive'],
-  fight:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action', 'Crit FW', 'Crit KD', 'Crit Stun', 'Crit OOA'],
+  fight:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action'],
   shoot:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action'],
   throw:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action'],
   cast:   ['Success', 'Miss / No Effect', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action', 'Miscast', 'Failed to Cast'],
@@ -43,6 +42,55 @@ export const INJURY_RESULTS = [
   'Hand Injury', 'Old Battle Wound', 'Madness', 'Nervous Condition',
   'Horrible Scars', 'Robbed', 'Captured', 'Sold to the Pits',
 ]
+
+export const CRITICAL_TABLES = {
+  bladed: {
+    label: 'Bladed',
+    subtitle: 'Swords, axes, double-handed swords…',
+    results: [
+      { range: '1–2', name: 'Flesh Wound', effect: 'Hits unprotected area — no armour save' },
+      { range: '3–4', name: 'Bladestorm', effect: '2 wounds · Armour saves taken separately' },
+      { range: '5–6', name: 'Sliced!', effect: 'No armour save · 2 wounds · +2 to injury rolls' },
+    ],
+  },
+  bludgeoning: {
+    label: 'Bludgeoning',
+    subtitle: 'Clubs, maces, hammers, flails, double-handed hammers…',
+    results: [
+      { range: '1–2', name: 'Hammered', effect: 'Target may not fight this turn (if not yet fought)' },
+      { range: '3–4', name: 'Clubbed', effect: 'Ignores armour saves and helmets' },
+      { range: '5',   name: 'Wild Sweep', effect: "Target's weapon knocked from hand" },
+      { range: '6',   name: 'Bludgeoned', effect: 'Auto Out of Action if fails armour save' },
+    ],
+  },
+  missile: {
+    label: 'Missile',
+    subtitle: 'Bows, crossbows, blackpowder, throwing knives…',
+    results: [
+      { range: '1–2', name: 'Hits a Weak Spot', effect: 'Ignore all armour saves' },
+      { range: '3–4', name: 'Ricochet', effect: 'Closest enemy within 6" is also hit (roll to wound normally)' },
+      { range: '5–6', name: 'Master Shot', effect: '2 wounds · No armour save' },
+    ],
+  },
+  thrusting: {
+    label: 'Thrusting',
+    subtitle: 'Spears, halberds, lances…',
+    results: [
+      { range: '1–2', name: 'Stab', effect: '+1 to injury rolls · Normal armour saves' },
+      { range: '3–4', name: 'Thrust', effect: 'Knocked down · Normal armour saves' },
+      { range: '5–6', name: 'Kebab!', effect: 'No armour save · +2 to injury rolls · Knocked back D6"' },
+    ],
+  },
+  unarmed: {
+    label: 'Unarmed',
+    subtitle: 'Wardogs, warhorses, zombies, possessed, animals…',
+    results: [
+      { range: '1–2', name: 'Body Blow', effect: 'Make one additional attack immediately' },
+      { range: '3–4', name: 'Crushing Blow', effect: '+1 to injury roll if save failed' },
+      { range: '5–6', name: 'Mighty Blow', effect: 'No armour save · +2 to injury rolls' },
+    ],
+  },
+}
 
 export function makeEventNote({ actorName, actionKey, targetName, outcome }) {
   const t = targetName ? ` ${targetName}` : ''

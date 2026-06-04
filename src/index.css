@@ -1834,3 +1834,101 @@ body {
 }
 
 .house-rules-btn:hover { background: var(--parchment-band); }
+
+/* ─── Critical Hit flow ──────────────────────────────── */
+.rec-ap-btn--crit {
+  background: var(--red);
+  color: var(--parchment-light);
+  border-color: #a02020;
+}
+
+.rec-ap-btn--crit:hover { background: #8a1818; }
+
+.rec-ap-btn--table {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 130px;
+}
+
+.rec-btn-table-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.rec-btn-table-sub {
+  font-family: var(--font-body);
+  font-size: 0.67rem;
+  font-style: italic;
+  opacity: 0.65;
+  white-space: normal;
+  line-height: 1.3;
+}
+
+.rec-ap-back-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.75rem;
+  color: var(--border-light);
+  padding: 0 0 0 8px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.rec-ap-crit-results {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.rec-ap-btn--crit-result {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  background: var(--parchment);
+  border: 1.5px solid var(--border-light);
+  cursor: pointer;
+  transition: background 0.12s;
+  color: var(--ink);
+}
+
+.rec-ap-btn--crit-result:hover { background: var(--parchment-dark); }
+
+.rec-crit-range {
+  font-family: var(--font-head);
+  font-size: 0.75rem;
+  background: var(--border-light);
+  color: var(--parchment-light);
+  padding: 3px 7px;
+  min-width: 32px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.rec-crit-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rec-crit-name {
+  font-family: var(--font-head);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.rec-crit-effect {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--ink-mid);
+  line-height: 1.3;
+}
