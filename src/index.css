@@ -963,7 +963,7 @@ body {
 }
 
 .bn-warrior-tag.is-sitout {
-  opacity: 0.45;
+  opacity: 0.65;
   background: var(--parchment);
   border-style: dashed;
 }
@@ -987,15 +987,17 @@ body {
 }
 
 .bn-sitout-badge {
-  font-size: 0.6rem;
+  font-size: 0.68rem;
   font-family: var(--font-head);
-  background: var(--border-light);
-  color: var(--parchment);
-  padding: 1px 3px;
+  font-weight: bold;
+  background: var(--ink-mid);
+  color: var(--parchment-light);
+  padding: 1px 4px;
   border-radius: 2px;
   text-transform: uppercase;
   text-decoration: none;
   display: inline-block;
+  letter-spacing: 0.04em;
 }
 
 .bn-pick-hint {
