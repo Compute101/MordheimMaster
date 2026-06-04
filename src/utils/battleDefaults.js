@@ -110,6 +110,15 @@ export function generateBattleText(battle) {
   lines.push(battle.scenario || 'Battle')
   lines.push('')
 
+  const sitout = [
+    ...battle.warbands[0].warriors.filter(w => w.sittingOut).map(w => w.name),
+    ...battle.warbands[1].warriors.filter(w => w.sittingOut).map(w => w.name),
+  ]
+  if (sitout.length) {
+    lines.push(`Sitting out: ${sitout.join(', ')}`)
+    lines.push('')
+  }
+
   const pregame = battle.turns.find(t => t.turnNumber === 0)
   if (pregame?.events.length) {
     lines.push('Pre-game')

@@ -948,6 +948,51 @@ body {
   gap: 4px;
 }
 
+.bn-warrior-tag.is-sitout {
+  opacity: 0.45;
+  background: var(--parchment);
+  border-style: dashed;
+}
+
+.bn-warrior-sitout-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-head);
+  font-size: inherit;
+  color: inherit;
+  padding: 0;
+  line-height: inherit;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.bn-warrior-tag.is-sitout .bn-warrior-sitout-toggle {
+  text-decoration: line-through;
+}
+
+.bn-sitout-badge {
+  font-size: 0.6rem;
+  font-family: var(--font-head);
+  background: var(--border-light);
+  color: var(--parchment);
+  padding: 1px 3px;
+  border-radius: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.bn-pick-hint {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-style: italic;
+  color: var(--ink-mid);
+  opacity: 0.7;
+  font-weight: normal;
+}
+
 .bn-warrior-remove {
   background: none;
   border: none;
@@ -1172,6 +1217,17 @@ body {
   font-size: 0.78rem;
   font-style: italic;
   color: var(--border-light);
+}
+
+.rec-sitout {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-style: italic;
+  color: var(--border-light);
+  margin-top: 6px;
+  padding-top: 4px;
+  border-top: 1px dashed var(--parchment-dark);
+  width: 100%;
 }
 
 .rec-warrior-btn {

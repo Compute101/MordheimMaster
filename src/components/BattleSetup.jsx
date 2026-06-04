@@ -30,6 +30,15 @@ function WarbandSlot({ index, warbands, slot, onChange }) {
     onChange({ ...slot, warriors: slot.warriors.filter((_, idx) => idx !== i) })
   }
 
+  const toggleSittingOut = (i) => {
+    onChange({
+      ...slot,
+      warriors: slot.warriors.map((w, idx) =>
+        idx === i ? { ...w, sittingOut: !w.sittingOut } : w
+      ),
+    })
+  }
+
   const label = index === 0 ? 'Warband 1' : 'Warband 2'
 
   return (
@@ -73,14 +82,26 @@ function WarbandSlot({ index, warbands, slot, onChange }) {
       )}
 
       <div className="bn-warriors-list">
-        <div className="bn-pick-label">Warriors:</div>
+        <div className="bn-pick-label">
+          Warriors:
+          {slot.warriors.length > 0 && (
+            <span className="bn-pick-hint"> — tap name to mark sitting out</span>
+          )}
+        </div>
         {slot.warriors.length === 0 && (
           <div className="bn-no-warriors">No warriors added yet</div>
         )}
         <div className="bn-warrior-chips">
           {slot.warriors.map((w, i) => (
-            <span key={i} className="bn-warrior-tag">
-              {w.name}
+            <span key={i} className={`bn-warrior-tag${w.sittingOut ? ' is-sitout' : ''}`}>
+              <button
+                className="bn-warrior-sitout-toggle"
+                onClick={() => toggleSittingOut(i)}
+                title={w.sittingOut ? 'Sitting out — tap to include' : 'Tap to mark sitting out'}
+              >
+                {w.sittingOut && <span className="bn-sitout-badge">out</span>}
+                {w.name}
+              </button>
               <button className="bn-warrior-remove" onClick={() => removeWarrior(i)}>×</button>
             </span>
           ))}

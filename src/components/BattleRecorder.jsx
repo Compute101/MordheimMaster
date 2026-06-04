@@ -166,6 +166,8 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
 
   const renderWarriorCol = (wb, wbIdx) => {
     const isActive = battle.currentWarbandIndex === wbIdx
+    const playing = wb.warriors.filter(w => !w.sittingOut)
+    const sitout = wb.warriors.filter(w => w.sittingOut)
     return (
       <div className={`rec-warband-col${isActive ? ' is-active' : ''}`}>
         <div className="rec-col-title">
@@ -173,10 +175,10 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
           {wb.name}
         </div>
         <div className="rec-warrior-btns">
-          {wb.warriors.length === 0 && (
+          {playing.length === 0 && (
             <span className="rec-no-warriors">No warriors</span>
           )}
-          {wb.warriors.map((w, i) => (
+          {playing.map((w, i) => (
             <button
               key={i}
               className={`rec-warrior-btn${as.actor?.name === w.name && as.actor?.wbIdx === wbIdx ? ' selected' : ''}`}
@@ -185,18 +187,23 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
               {w.name}
             </button>
           ))}
+          {sitout.length > 0 && (
+            <div className="rec-sitout">
+              Sitting out: {sitout.map(w => w.name).join(', ')}
+            </div>
+          )}
         </div>
       </div>
     )
   }
 
   const otherWbWarriors = as.actor
-    ? (as.actor.wbIdx === 0 ? wb1.warriors : wb0.warriors)
+    ? (as.actor.wbIdx === 0 ? wb1.warriors : wb0.warriors).filter(w => !w.sittingOut)
     : []
   const bothWbWarriors = as.actor
     ? [
-        ...wb0.warriors.map(w => ({ ...w, wbIdx: 0 })),
-        ...wb1.warriors.map(w => ({ ...w, wbIdx: 1 })),
+        ...wb0.warriors.filter(w => !w.sittingOut).map(w => ({ ...w, wbIdx: 0 })),
+        ...wb1.warriors.filter(w => !w.sittingOut).map(w => ({ ...w, wbIdx: 1 })),
       ]
     : []
 
