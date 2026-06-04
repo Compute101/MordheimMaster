@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import HeroCard from './HeroCard'
 import HenchmanCard from './HenchmanCard'
 import { createHenchmanGroup } from '../utils/defaults'
 
 export default function RosterSheet({ warband, onUpdate, onBack }) {
+  const [heroesCollapsed, setHeroesCollapsed] = useState(false)
   const set = (field, value) => onUpdate({ ...warband, [field]: value })
 
   const updateHero = (index, updated) => {
@@ -84,17 +86,26 @@ export default function RosterSheet({ warband, onUpdate, onBack }) {
       </div>
 
       {/* ── Heroes Section ── */}
-      <div className="section-banner">Heroes</div>
-      <div className="heroes-grid">
-        {warband.heroes.map((hero, i) => (
-          <HeroCard
-            key={hero.id}
-            hero={hero}
-            heroNumber={i + 1}
-            onUpdate={updated => updateHero(i, updated)}
-          />
-        ))}
-      </div>
+      <button
+        className={`section-banner section-banner--collapsible${heroesCollapsed ? ' section-banner--collapsed' : ''}`}
+        onClick={() => setHeroesCollapsed(c => !c)}
+        aria-expanded={!heroesCollapsed}
+      >
+        Heroes
+        <span className="section-banner__chevron" aria-hidden="true" />
+      </button>
+      {!heroesCollapsed && (
+        <div className="heroes-grid">
+          {warband.heroes.map((hero, i) => (
+            <HeroCard
+              key={hero.id}
+              hero={hero}
+              heroNumber={i + 1}
+              onUpdate={updated => updateHero(i, updated)}
+            />
+          ))}
+        </div>
+      )}
 
       {/* ── Henchmen Section ── */}
       <div className="section-banner">Henchmen</div>
