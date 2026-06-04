@@ -798,48 +798,26 @@ body {
 }
 
 /* ─── Battle Setup ────────────────────────────────────── */
-.bn-scenario-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.bn-scenario-group + .bn-scenario-group {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid var(--parchment-dark);
-}
-
-.bn-scenario-group-label {
+.bn-scenario-select {
   font-family: var(--font-head);
-  font-size: 0.65rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--border-light);
-}
-
-.bn-scenario-btns {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.bn-scenario-btn {
-  font-family: var(--font-head);
-  font-size: 0.78rem;
-  letter-spacing: 0.06em;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
   background: var(--parchment-light);
   border: 1.5px solid var(--border-light);
-  color: var(--ink-mid);
-  padding: 7px 13px;
+  color: var(--ink);
+  padding: 8px 12px;
+  width: 100%;
+  max-width: 360px;
   cursor: pointer;
-  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
 }
 
-.bn-scenario-btn:hover { background: var(--parchment-dark); }
-.bn-scenario-btn.active {
-  background: var(--border);
-  color: var(--parchment-light);
+.bn-scenario-select:focus {
   border-color: var(--border);
 }
 

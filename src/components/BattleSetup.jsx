@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { SCENARIO_GROUPS, createBattle } from '../utils/battleDefaults'
+import { SCENARIOS, createBattle } from '../utils/battleDefaults'
 
 function WarbandSlot({ index, warbands, slot, onChange }) {
   const [addWarriorInput, setAddWarriorInput] = useState('')
@@ -123,7 +123,6 @@ function WarbandSlot({ index, warbands, slot, onChange }) {
 
 export default function BattleSetup({ warbands, houseRules, onBegin, onBack }) {
   const [scenario, setScenario] = useState('')
-  const [customScenario, setCustomScenario] = useState('')
   const [slots, setSlots] = useState([
     { rosterId: null, name: '', warriors: [] },
     { rosterId: null, name: '', warriors: [] },
@@ -133,12 +132,11 @@ export default function BattleSetup({ warbands, houseRules, onBegin, onBack }) {
     setSlots(prev => prev.map((s, i) => i === idx ? { ...updates } : s))
   }
 
-  const effectiveScenario = scenario === '__custom__' ? customScenario : scenario
-  const canBegin = slots[0].name.trim() && slots[1].name.trim() && effectiveScenario.trim()
+  const canBegin = slots[0].name.trim() && slots[1].name.trim() && scenario.trim()
 
   const handleBegin = () => {
     const battle = createBattle({
-      scenario: effectiveScenario,
+      scenario,
       warband0: slots[0],
       warband1: slots[1],
       houseRules: houseRules || '',
@@ -156,40 +154,16 @@ export default function BattleSetup({ warbands, houseRules, onBegin, onBack }) {
       <div className="bn-content">
         <div className="bn-section">
           <div className="bn-section-title">Scenario</div>
-          {SCENARIO_GROUPS.map((group, gi) => (
-            <div key={gi} className="bn-scenario-group">
-              {group.label && (
-                <div className="bn-scenario-group-label">{group.label}</div>
-              )}
-              <div className="bn-scenario-btns">
-                {group.scenarios.map(s => (
-                  <button
-                    key={s}
-                    className={`bn-scenario-btn${scenario === s ? ' active' : ''}`}
-                    onClick={() => setScenario(s)}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </div>
-          ))}
-          <div className="bn-scenario-group">
-            <button
-              className={`bn-scenario-btn${scenario === '__custom__' ? ' active' : ''}`}
-              onClick={() => setScenario('__custom__')}
-            >
-              Custom…
-            </button>
-          </div>
-          {scenario === '__custom__' && (
-            <input
-              className="bn-name-input"
-              placeholder="Scenario name…"
-              value={customScenario}
-              onChange={e => setCustomScenario(e.target.value)}
-            />
-          )}
+          <select
+            className="bn-scenario-select"
+            value={scenario}
+            onChange={e => setScenario(e.target.value)}
+          >
+            <option value="">— choose scenario —</option>
+            {SCENARIOS.map(s => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
         </div>
 
         <div className="bn-slots-row">

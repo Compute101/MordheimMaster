@@ -1,17 +1,6 @@
-export const SCENARIO_GROUPS = [
-  {
-    label: null,
-    scenarios: [
-      'Defend the Find', 'Skirmish', 'Wyrdstone Hunt', 'Breakthrough',
-      'Street Fight', 'Occupy', 'Hidden Treasure', 'Chance Encounter', 'Surprise Attack',
-    ],
-  },
-  {
-    label: 'Optional',
-    scenarios: [
-      'Death Match', 'The Gauntlet', 'Rescue', 'In the Shadow of the Horned Rat',
-    ],
-  },
+export const SCENARIOS = [
+  'Defend the Find', 'Skirmish', 'Wyrdstone Hunt', 'Breakthrough',
+  'Street Fight', 'Occupy', 'Hidden Treasure', 'Chance Encounter', 'Surprise Attack',
 ]
 
 export const ACTIONS = [
