@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { SCENARIOS, createBattle } from '../utils/battleDefaults'
+import { SCENARIO_GROUPS, createBattle } from '../utils/battleDefaults'
 
 function WarbandSlot({ index, warbands, slot, onChange }) {
   const [addWarriorInput, setAddWarriorInput] = useState('')
@@ -156,16 +156,25 @@ export default function BattleSetup({ warbands, houseRules, onBegin, onBack }) {
       <div className="bn-content">
         <div className="bn-section">
           <div className="bn-section-title">Scenario</div>
-          <div className="bn-scenario-btns">
-            {SCENARIOS.map(s => (
-              <button
-                key={s}
-                className={`bn-scenario-btn${scenario === s ? ' active' : ''}`}
-                onClick={() => setScenario(s)}
-              >
-                {s}
-              </button>
-            ))}
+          {SCENARIO_GROUPS.map((group, gi) => (
+            <div key={gi} className="bn-scenario-group">
+              {group.label && (
+                <div className="bn-scenario-group-label">{group.label}</div>
+              )}
+              <div className="bn-scenario-btns">
+                {group.scenarios.map(s => (
+                  <button
+                    key={s}
+                    className={`bn-scenario-btn${scenario === s ? ' active' : ''}`}
+                    onClick={() => setScenario(s)}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+          <div className="bn-scenario-group">
             <button
               className={`bn-scenario-btn${scenario === '__custom__' ? ' active' : ''}`}
               onClick={() => setScenario('__custom__')}

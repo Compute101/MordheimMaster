@@ -798,6 +798,26 @@ body {
 }
 
 /* ─── Battle Setup ────────────────────────────────────── */
+.bn-scenario-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bn-scenario-group + .bn-scenario-group {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--parchment-dark);
+}
+
+.bn-scenario-group-label {
+  font-family: var(--font-head);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--border-light);
+}
+
 .bn-scenario-btns {
   display: flex;
   flex-wrap: wrap;
