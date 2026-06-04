@@ -11,6 +11,7 @@ export const ACTIONS = [
   { key: 'fight',  label: 'Fight',  needsTarget: true,  needsOutcome: true  },
   { key: 'shoot',  label: 'Shoot',  needsTarget: true,  needsOutcome: true  },
   { key: 'throw',  label: 'Throw',  needsTarget: true,  needsOutcome: true  },
+  { key: 'cast',   label: 'Cast Spell', needsTarget: true, needsOutcome: true  },
   { key: 'goad',   label: 'Goad',   needsTarget: true,  needsOutcome: true  },
   { key: 'flee',   label: 'Flee',   needsTarget: false, needsOutcome: false },
   { key: 'rout',   label: 'Rout',   needsTarget: false, needsOutcome: false },
@@ -23,6 +24,7 @@ export const OUTCOMES = {
   fight:  ['Miss', 'Knock Down', 'Stunned', 'Out of Action', 'Crit KD', 'Crit Stun', 'Crit OOA'],
   shoot:  ['Miss', 'Knock Down', 'Stunned', 'Out of Action'],
   throw:  ['Miss', 'Knock Down', 'Stunned', 'Out of Action'],
+  cast:   ['Success', 'Miss / No Effect', 'Knock Down', 'Stunned', 'Out of Action', 'Miscast', 'Failed to Cast'],
   goad:   ['Goaded', 'Goad Failed'],
 }
 
@@ -45,6 +47,10 @@ export function makeEventNote({ actorName, actionKey, targetName, outcome }) {
     case 'fight':  return `${actorName} attacked${t} — ${outcome}`
     case 'shoot':  return `${actorName} shot at${t} — ${outcome}`
     case 'throw':  return `${actorName} threw at${t} — ${outcome}`
+    case 'cast':
+      if (outcome === 'Failed to Cast') return `${actorName} failed to cast${t}`
+      if (outcome === 'Miscast') return `${actorName} miscast!`
+      return `${actorName} cast spell${t} — ${outcome}`
     case 'goad':
       return outcome === 'Goad Failed'
         ? `${actorName} failed to goad${t}`
