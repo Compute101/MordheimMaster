@@ -1084,6 +1084,20 @@ body {
 
 .rec-btn--turn:hover { background: var(--parchment); }
 
+.rec-btn--note {
+  background: var(--parchment-dark);
+  color: var(--ink);
+  border-color: var(--border-light);
+  font-size: 1rem;
+  padding: 7px 10px;
+}
+
+.rec-btn--note:hover, .rec-btn--note.active {
+  background: var(--gold);
+  color: var(--parchment-light);
+  border-color: var(--gold);
+}
+
 .rec-btn--end {
   background: var(--red);
   color: var(--parchment-light);
@@ -1360,6 +1374,14 @@ body {
   margin-right: 5px;
   color: var(--border-light);
 }
+
+.rec-log-event--note {
+  font-style: italic;
+  color: var(--ink-mid);
+  padding-left: 4px;
+}
+
+.rec-log-event--note::before { content: none; }
 
 /* ─── Post Battle ─────────────────────────────────────── */
 .pb-result-btns {

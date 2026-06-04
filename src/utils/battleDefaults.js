@@ -5,26 +5,28 @@ export const SCENARIOS = [
 ]
 
 export const ACTIONS = [
-  { key: 'move',   label: 'Move',   needsTarget: false, needsOutcome: false },
-  { key: 'run',    label: 'Run',    needsTarget: false, needsOutcome: false },
-  { key: 'charge', label: 'Charge', needsTarget: true,  needsOutcome: true  },
-  { key: 'fight',  label: 'Fight',  needsTarget: true,  needsOutcome: true  },
-  { key: 'shoot',  label: 'Shoot',  needsTarget: true,  needsOutcome: true  },
-  { key: 'throw',  label: 'Throw',  needsTarget: true,  needsOutcome: true  },
-  { key: 'cast',   label: 'Cast Spell', needsTarget: true, needsOutcome: true  },
-  { key: 'goad',   label: 'Goad',   needsTarget: true,  needsOutcome: true  },
-  { key: 'flee',   label: 'Flee',   needsTarget: false, needsOutcome: false },
-  { key: 'rout',   label: 'Rout',   needsTarget: false, needsOutcome: false },
-  { key: 'rally',  label: 'Rally',  needsTarget: false, needsOutcome: false },
-  { key: 'other',  label: 'Other…', needsTarget: false, needsOutcome: false, isOther: true },
+  { key: 'move',           label: 'Move',           needsTarget: false, needsOutcome: false },
+  { key: 'run',            label: 'Run',            needsTarget: false, needsOutcome: false },
+  { key: 'crawl',          label: 'Crawl Away',     needsTarget: false, needsOutcome: false },
+  { key: 'charge',         label: 'Charge',         needsTarget: true,  needsOutcome: true  },
+  { key: 'fight',          label: 'Fight',          needsTarget: true,  needsOutcome: true  },
+  { key: 'shoot',          label: 'Shoot',          needsTarget: true,  needsOutcome: true  },
+  { key: 'throw',          label: 'Throw',          needsTarget: true,  needsOutcome: true  },
+  { key: 'cast',           label: 'Cast Spell',     needsTarget: true,  needsOutcome: true  },
+  { key: 'goad',           label: 'Goad',           needsTarget: true,  needsOutcome: true  },
+  { key: 'flee',           label: 'Flee',           needsTarget: false, needsOutcome: false },
+  { key: 'broken',         label: 'Broken',         needsTarget: false, needsOutcome: false },
+  { key: 'rout',           label: 'Voluntary Rout', needsTarget: false, needsOutcome: false },
+  { key: 'rally',          label: 'Rally',          needsTarget: false, needsOutcome: false },
+  { key: 'other',          label: 'Other…',         needsTarget: false, needsOutcome: false, isOther: true },
 ]
 
 export const OUTCOMES = {
   charge: ['Charged', 'Failed Charge'],
-  fight:  ['Miss', 'Knock Down', 'Stunned', 'Out of Action', 'Crit KD', 'Crit Stun', 'Crit OOA'],
-  shoot:  ['Miss', 'Knock Down', 'Stunned', 'Out of Action'],
-  throw:  ['Miss', 'Knock Down', 'Stunned', 'Out of Action'],
-  cast:   ['Success', 'Miss / No Effect', 'Knock Down', 'Stunned', 'Out of Action', 'Miscast', 'Failed to Cast'],
+  fight:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action', 'Crit KD', 'Crit Stun', 'Crit OOA'],
+  shoot:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action'],
+  throw:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action'],
+  cast:   ['Success', 'Miss / No Effect', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action', 'Miscast', 'Failed to Cast'],
   goad:   ['Goaded', 'Goad Failed'],
 }
 
@@ -55,8 +57,10 @@ export function makeEventNote({ actorName, actionKey, targetName, outcome }) {
       return outcome === 'Goad Failed'
         ? `${actorName} failed to goad${t}`
         : `${actorName} goaded${t}`
+    case 'crawl':  return `${actorName} crawled away`
     case 'flee':   return `${actorName} fled`
-    case 'rout':   return `${actorName} routed`
+    case 'broken': return `${actorName} broke and fled`
+    case 'rout':   return `${actorName} voluntarily routed`
     case 'rally':  return `${actorName} rallied`
     default:       return outcome || `${actorName} acted`
   }
@@ -96,7 +100,7 @@ export function generateBattleText(battle) {
       const turn = battle.turns.find(x => x.turnNumber === t && x.warbandIndex === w)
       if (!turn || turn.events.length === 0) continue
       lines.push(`${battle.warbands[w].name} turn ${t}`)
-      turn.events.forEach(e => lines.push(e.note))
+      turn.events.forEach(e => lines.push(e.actorName === null ? `  [${e.note}]` : e.note))
       lines.push('')
     }
   }

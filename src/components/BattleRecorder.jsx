@@ -26,6 +26,8 @@ function addEventToTurn(battle, event) {
 export default function BattleRecorder({ battle, onChange, onEndBattle }) {
   const [as, setAs] = useState(INITIAL_ACTION)
   const [logOpen, setLogOpen] = useState(false)
+  const [turnNote, setTurnNote] = useState('')
+  const [turnNoteOpen, setTurnNoteOpen] = useState(false)
 
   const wb0 = battle.warbands[0]
   const wb1 = battle.warbands[1]
@@ -106,8 +108,26 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
     setAs(INITIAL_ACTION)
   }
 
+  const commitTurnNote = () => {
+    if (!turnNote.trim()) return
+    const event = {
+      id: crypto.randomUUID(),
+      actorName: null,
+      actorWbIdx: null,
+      actionKey: 'turn-note',
+      targetName: null,
+      outcome: null,
+      note: turnNote.trim(),
+    }
+    onChange(addEventToTurn(battle, event))
+    setTurnNote('')
+    setTurnNoteOpen(false)
+  }
+
   const handleEndTurn = () => {
     setAs(INITIAL_ACTION)
+    setTurnNoteOpen(false)
+    setTurnNote('')
     const nextWbIdx = battle.currentWarbandIndex === 0 ? 1 : 0
     const nextTurn = battle.currentWarbandIndex === 1 ? battle.currentTurn + 1 : battle.currentTurn
     onChange({ ...battle, currentWarbandIndex: nextWbIdx, currentTurn: nextTurn })
@@ -160,6 +180,13 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
           <span className="rec-turn-wb">{activeWbName}</span>
         </div>
         <div className="rec-header-btns">
+          <button
+            className={`rec-btn rec-btn--note${turnNoteOpen ? ' active' : ''}`}
+            onClick={() => { setTurnNoteOpen(o => !o); setAs(INITIAL_ACTION) }}
+            title="Add a flavour note for this turn"
+          >
+            📝
+          </button>
           <button className="rec-btn rec-btn--turn" onClick={handleEndTurn}>
             End Turn →
           </button>
@@ -175,7 +202,30 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
         {renderWarriorCol(wb1, 1)}
       </div>
 
-      {as.phase && (
+      {turnNoteOpen && (
+        <div className="rec-action-panel rec-turn-note-panel">
+          <div className="rec-ap-actor">
+            <span className="rec-ap-acting">Turn note</span>
+            <span className="rec-ap-wb">— {battle.warbands[battle.currentWarbandIndex].name} turn {battle.currentTurn}</span>
+            <button className="rec-ap-cancel" onClick={() => { setTurnNoteOpen(false); setTurnNote('') }}>✕</button>
+          </div>
+          <div className="rec-ap-section">
+            <div className="rec-ap-other-row">
+              <input
+                className="rec-ap-other-input"
+                placeholder="Flavour, context, anything that happened…"
+                value={turnNote}
+                autoFocus
+                onChange={e => setTurnNote(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && commitTurnNote()}
+              />
+              <button className="rec-ap-btn" onClick={commitTurnNote}>Log</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {!turnNoteOpen && as.phase && (
         <div className="rec-action-panel">
           <div className="rec-ap-actor">
             <span className="rec-ap-acting">Acting:</span>
@@ -266,7 +316,9 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
                     Turn {turn.turnNumber} — {battle.warbands[turn.warbandIndex].name}
                   </div>
                   {turn.events.map(e => (
-                    <div key={e.id} className="rec-log-event">{e.note}</div>
+                    <div key={e.id} className={`rec-log-event${e.actorName === null ? ' rec-log-event--note' : ''}`}>
+                      {e.note}
+                    </div>
                   ))}
                 </div>
               ))}
