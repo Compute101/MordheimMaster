@@ -1,7 +1,7 @@
 export const SCENARIOS = [
   'Occupy', 'Skirmish', 'Wyrdstone Hunt', 'Breakthrough',
   'In the Shadow of the Horned Rat', 'Death Match', 'The Gauntlet',
-  'Defend the Find', 'Chance Encounter', 'Rescue',
+  'Defend the Find', 'Chance Encounter', 'Rescue', 'Hidden Treasure',
 ]
 
 export const ACTIONS = [
@@ -11,6 +11,7 @@ export const ACTIONS = [
   { key: 'standup',        label: 'Stand Up',       needsTarget: false, needsOutcome: false },
   { key: 'climb',          label: 'Climb / Vault',  needsTarget: false, needsOutcome: true  },
   { key: 'charge',         label: 'Charge',         needsTarget: true,  needsOutcome: true  },
+  { key: 'diving-charge',  label: 'Diving Charge',  needsTarget: true,  needsOutcome: true  },
   { key: 'fight',          label: 'Fight',          needsTarget: true,  needsOutcome: true  },
   { key: 'shoot',          label: 'Shoot',          needsTarget: true,  needsOutcome: true  },
   { key: 'throw',          label: 'Throw',          needsTarget: true,  needsOutcome: true  },
@@ -27,6 +28,7 @@ export const ACTIONS = [
 export const OUTCOMES = {
   climb:  ['Climbed', 'Vault Failed', 'Fell — Fine', 'Fell — Stunned', 'Fell — OOA'],
   charge: ['Charged', 'Failed Charge'],
+  'diving-charge': ['Diving Charged', 'Failed Dive'],
   fight:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action', 'Crit KD', 'Crit Stun', 'Crit OOA'],
   shoot:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action'],
   throw:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action'],
@@ -50,6 +52,10 @@ export function makeEventNote({ actorName, actionKey, targetName, outcome }) {
       return outcome === 'Failed Charge'
         ? `${actorName} failed to charge${t}`
         : `${actorName} charged${t}`
+    case 'diving-charge':
+      return outcome === 'Failed Dive'
+        ? `${actorName} failed a diving charge on${t}`
+        : `${actorName} diving charged${t}`
     case 'fight':  return `${actorName} attacked${t} — ${outcome}`
     case 'shoot':  return `${actorName} shot at${t} — ${outcome}`
     case 'throw':  return `${actorName} threw at${t} — ${outcome}`
