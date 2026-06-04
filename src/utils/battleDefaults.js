@@ -115,7 +115,7 @@ export function generateBattleText(battle) {
   }
 
   const pb = battle.postBattle
-  const hasPostBattle = pb.result || pb.injuries.length || pb.xpGains.length || pb.notes
+  const hasPostBattle = pb.result || pb.injuries.length || pb.xpGains.length || pb.notes || pb.spendingNotes
 
   if (hasPostBattle) {
     lines.push('Post Battle')
@@ -131,13 +131,18 @@ export function generateBattleText(battle) {
       if (!amount) return
       const skillEntry = pb.skills.find(s => s.warriorName === warriorName)
       let line = `${warriorName} +${amount} XP`
-      if (skillEntry?.skill) line += `, skill: ${skillEntry.skill}`
+      if (skillEntry?.skill) line += `, ${skillEntry.skill}`
       lines.push(line)
     })
 
     if (pb.notes) {
       lines.push('')
       lines.push(pb.notes)
+    }
+
+    if (pb.spendingNotes) {
+      lines.push('')
+      lines.push(pb.spendingNotes)
     }
   }
 

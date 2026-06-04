@@ -1384,6 +1384,57 @@ body {
 .rec-log-event--note::before { content: none; }
 
 /* ─── Post Battle ─────────────────────────────────────── */
+
+/* Section structure */
+.pb-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 2px double var(--border);
+  padding-top: 16px;
+}
+
+.pb-section:first-child { border-top: none; padding-top: 0; }
+
+.pb-section-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.pb-section-num {
+  font-family: var(--font-title);
+  font-size: 1.4rem;
+  color: var(--border);
+  line-height: 1;
+  flex-shrink: 0;
+  min-width: 1.8rem;
+  text-align: center;
+}
+
+.pb-section-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pb-section-title {
+  font-family: var(--font-head);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.pb-section-sub {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--ink-mid);
+}
+
+/* Result buttons */
 .pb-result-btns {
   display: flex;
   gap: 8px;
@@ -1407,65 +1458,53 @@ body {
 .pb-result-btn:hover { background: var(--parchment-dark); }
 .pb-result-btn.active { background: var(--border); color: var(--parchment-light); border-color: var(--border); }
 
-.pb-warrior-list {
+/* Per-warrior rows (shared across injury/xp/advance sections) */
+.pb-row-list {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.pb-warrior-row {
+.pb-row {
   background: var(--parchment-light);
   border: 1px solid var(--border-light);
-  padding: 10px 12px;
+  padding: 8px 12px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
-.pb-warrior-header {
+.pb-row-name {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: 7px;
 }
 
 .pb-warrior-name {
   font-family: var(--font-head);
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--ink);
 }
 
 .pb-warrior-wb {
   font-family: var(--font-body);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-style: italic;
   color: var(--border-light);
 }
 
-.pb-row-section {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.pb-row-label {
-  font-family: var(--font-head);
-  font-size: 0.58rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-mid);
-}
-
-.pb-injury-btns {
+/* Generic action buttons used in each section */
+.pb-btns-wrap {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
 }
 
-.pb-injury-btn {
+.pb-btn {
   font-family: var(--font-head);
   font-size: 0.72rem;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   background: var(--parchment);
   border: 1.5px solid var(--border-light);
   color: var(--ink);
@@ -1475,48 +1514,29 @@ body {
   transition: background 0.1s;
 }
 
-.pb-injury-btn:hover { background: var(--parchment-dark); }
-.pb-injury-btn.active { background: var(--border); color: var(--parchment-light); border-color: var(--border); }
-.pb-injury-btn--more { color: var(--border-light); border-style: dashed; font-size: 0.68rem; }
+.pb-btn:hover { background: var(--parchment-dark); }
+.pb-btn.active { background: var(--border); color: var(--parchment-light); border-color: var(--border); }
 
-.pb-xp-skill-row {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
+.pb-btn--xp { font-weight: 700; min-width: 38px; }
+.pb-btn--xp.active { background: var(--gold); border-color: var(--gold); }
 
-.pb-xp-part, .pb-skill-part {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
+.pb-btn--more { color: var(--border-light); border-style: dashed; font-size: 0.68rem; }
 
-.pb-xp-btns {
-  display: flex;
-  gap: 4px;
-}
-
-.pb-xp-btn {
+.pb-xp-badge {
   font-family: var(--font-head);
-  font-size: 0.78rem;
-  font-weight: 700;
-  background: var(--parchment);
-  border: 1.5px solid var(--border-light);
-  color: var(--ink);
-  padding: 6px 10px;
-  cursor: pointer;
-  min-height: 34px;
-  min-width: 38px;
-  transition: background 0.1s;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  align-self: center;
+  padding-left: 4px;
 }
 
-.pb-xp-btn:hover { background: var(--parchment-dark); }
-.pb-xp-btn.active { background: var(--gold); color: var(--parchment-light); border-color: var(--gold); }
-
-.pb-skill-row {
+/* Advances input row */
+.pb-advance-wrap {
   display: flex;
   gap: 5px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .pb-skill-tag {
@@ -1525,7 +1545,7 @@ body {
   background: var(--parchment-dark);
   border: 1px solid var(--border-light);
   color: var(--ink);
-  padding: 3px 7px;
+  padding: 3px 8px;
   white-space: nowrap;
 }
 
@@ -1535,32 +1555,33 @@ body {
   border: none;
   border-bottom: 1px dashed var(--border-light);
   font-family: var(--font-body);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: var(--ink);
   outline: none;
-  padding: 2px 2px;
-  min-width: 80px;
+  padding: 2px 3px;
+  min-width: 100px;
 }
 
 .pb-skill-input::placeholder { color: var(--parchment-dark); font-style: italic; }
 .pb-skill-input:focus { border-bottom-color: var(--ink-mid); }
 
-.pb-add-skill-btn {
+.pb-add-btn {
   background: none;
   border: 1px solid var(--border-light);
   color: var(--ink-mid);
   cursor: pointer;
   font-family: var(--font-head);
   font-size: 0.9rem;
-  padding: 2px 7px;
+  padding: 2px 8px;
   transition: background 0.1s;
 }
 
-.pb-add-skill-btn:hover { background: var(--border); color: var(--parchment-light); }
+.pb-add-btn:hover { background: var(--border); color: var(--parchment-light); }
 
+/* Notes text areas */
 .pb-notes-area {
   width: 100%;
-  min-height: 120px;
+  min-height: 90px;
   background: var(--parchment);
   border: 1.5px solid var(--border-light);
   font-family: var(--font-body);
@@ -1571,6 +1592,9 @@ body {
   resize: vertical;
   line-height: 1.5;
 }
+
+.pb-notes-area:focus { border-color: var(--border); }
+.pb-notes-area::placeholder { color: var(--parchment-dark); font-style: italic; }
 
 .pb-notes-area:focus { border-color: var(--border); }
 .pb-notes-area::placeholder { color: var(--parchment-dark); font-style: italic; }
