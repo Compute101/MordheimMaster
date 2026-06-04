@@ -2,6 +2,7 @@ export const SCENARIOS = [
   'Occupy', 'Skirmish', 'Wyrdstone Hunt', 'Breakthrough',
   'In the Shadow of the Horned Rat', 'Death Match', 'The Gauntlet',
   'Defend the Find', 'Chance Encounter', 'Rescue', 'Hidden Treasure',
+  'Surprise Attack',
 ]
 
 export const ACTIONS = [
@@ -29,7 +30,7 @@ export const OUTCOMES = {
   climb:  ['Climbed', 'Vault Failed', 'Fell — Fine', 'Fell — Stunned', 'Fell — OOA'],
   charge: ['Charged', 'Failed Charge'],
   'diving-charge': ['Diving Charged', 'Failed Dive'],
-  fight:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action', 'Crit KD', 'Crit Stun', 'Crit OOA'],
+  fight:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action', 'Crit FW', 'Crit KD', 'Crit Stun', 'Crit OOA'],
   shoot:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action'],
   throw:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action'],
   cast:   ['Success', 'Miss / No Effect', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action', 'Miscast', 'Failed to Cast'],
