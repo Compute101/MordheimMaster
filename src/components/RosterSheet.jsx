@@ -5,6 +5,7 @@ import { createHenchmanGroup } from '../utils/defaults'
 
 export default function RosterSheet({ warband, onUpdate, onBack }) {
   const [heroesCollapsed, setHeroesCollapsed] = useState(false)
+  const [henchmenCollapsed, setHenchmenCollapsed] = useState(false)
   const set = (field, value) => onUpdate({ ...warband, [field]: value })
 
   const updateHero = (index, updated) => {
@@ -108,23 +109,34 @@ export default function RosterSheet({ warband, onUpdate, onBack }) {
       )}
 
       {/* ── Henchmen Section ── */}
-      <div className="section-banner">Henchmen</div>
-      <div className="heroes-grid henchmen-grid">
-        {warband.henchmen.map((group, i) => (
-          <HenchmanCard
-            key={group.id}
-            group={group}
-            groupNumber={i + 1}
-            onUpdate={updated => updateHenchman(i, updated)}
-            onRemove={() => removeHenchmanGroup(i)}
-          />
-        ))}
-      </div>
-      <div className="add-group-row">
-        <button className="add-group-btn" onClick={addHenchmanGroup}>
-          + Add Henchman Group
-        </button>
-      </div>
+      <button
+        className={`section-banner section-banner--collapsible${henchmenCollapsed ? ' section-banner--collapsed' : ''}`}
+        onClick={() => setHenchmenCollapsed(c => !c)}
+        aria-expanded={!henchmenCollapsed}
+      >
+        Henchmen
+        <span className="section-banner__chevron" aria-hidden="true" />
+      </button>
+      {!henchmenCollapsed && (
+        <>
+          <div className="heroes-grid henchmen-grid">
+            {warband.henchmen.map((group, i) => (
+              <HenchmanCard
+                key={group.id}
+                group={group}
+                groupNumber={i + 1}
+                onUpdate={updated => updateHenchman(i, updated)}
+                onRemove={() => removeHenchmanGroup(i)}
+              />
+            ))}
+          </div>
+          <div className="add-group-row">
+            <button className="add-group-btn" onClick={addHenchmanGroup}>
+              + Add Henchman Group
+            </button>
+          </div>
+        </>
+      )}
 
       {/* ── Footer ── */}
       <div className="sheet-footer">
