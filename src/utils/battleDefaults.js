@@ -8,6 +8,7 @@ export const ACTIONS = [
   { key: 'move',           label: 'Move',           needsTarget: false, needsOutcome: false },
   { key: 'run',            label: 'Run',            needsTarget: false, needsOutcome: false },
   { key: 'crawl',          label: 'Crawl Away',     needsTarget: false, needsOutcome: false },
+  { key: 'climb',          label: 'Climb / Vault',  needsTarget: false, needsOutcome: true  },
   { key: 'charge',         label: 'Charge',         needsTarget: true,  needsOutcome: true  },
   { key: 'fight',          label: 'Fight',          needsTarget: true,  needsOutcome: true  },
   { key: 'shoot',          label: 'Shoot',          needsTarget: true,  needsOutcome: true  },
@@ -22,6 +23,7 @@ export const ACTIONS = [
 ]
 
 export const OUTCOMES = {
+  climb:  ['Climbed', 'Vault Failed', 'Fell — Fine', 'Fell — Stunned', 'Fell — OOA'],
   charge: ['Charged', 'Failed Charge'],
   fight:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action', 'Crit KD', 'Crit Stun', 'Crit OOA'],
   shoot:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action'],
@@ -58,6 +60,13 @@ export function makeEventNote({ actorName, actionKey, targetName, outcome }) {
         ? `${actorName} failed to goad${t}`
         : `${actorName} goaded${t}`
     case 'crawl':  return `${actorName} crawled away`
+    case 'climb':
+      if (outcome === 'Climbed') return `${actorName} climbed`
+      if (outcome === 'Vault Failed') return `${actorName} failed to vault`
+      if (outcome === 'Fell — Fine') return `${actorName} fell — fine`
+      if (outcome === 'Fell — Stunned') return `${actorName} fell — Stunned`
+      if (outcome === 'Fell — OOA') return `${actorName} fell — Out of Action`
+      return `${actorName} climbed — ${outcome}`
     case 'flee':   return `${actorName} fled`
     case 'broken': return `${actorName} broke and fled`
     case 'rout':   return `${actorName} voluntarily routed`

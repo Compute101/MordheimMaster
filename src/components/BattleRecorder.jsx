@@ -48,6 +48,11 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
     }
     if (action.needsTarget) {
       setAs(prev => ({ ...prev, phase: 'target', actionKey: action.key }))
+      return
+    }
+    // needsOutcome but no target (e.g. Climb/Vault) — skip straight to outcome
+    if (action.needsOutcome) {
+      setAs(prev => ({ ...prev, phase: 'outcome', actionKey: action.key, target: null }))
     }
   }
 
