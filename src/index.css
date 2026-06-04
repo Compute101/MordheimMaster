@@ -692,6 +692,22 @@ body {
   justify-content: center;
 }
 
+.list-rules-note {
+  margin-top: 24px;
+  text-align: center;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.8rem;
+  color: var(--border-light);
+  opacity: 0.75;
+}
+
+.list-rules-note a {
+  color: var(--border-light);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .battle-notes-btn {
   font-family: var(--font-head);
   font-size: 0.95rem;

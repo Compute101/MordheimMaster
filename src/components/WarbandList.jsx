@@ -41,6 +41,10 @@ export default function WarbandList({ warbands, onSelect, onCreate, onDelete, on
           ⚔ Battle Notes
         </button>
       </div>
+
+      <div className="list-rules-note">
+        Rules reference: <a href="https://mordheimer.net" target="_blank" rel="noreferrer">mordheimer.net</a>
+      </div>
     </div>
   )
 }
