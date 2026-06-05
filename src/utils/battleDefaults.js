@@ -9,6 +9,7 @@ export const ACTIONS = [
   { key: 'crawl',          label: 'Crawl Away',     needsTarget: false, needsOutcome: false },
   { key: 'standup',        label: 'Stand Up',       needsTarget: false, needsOutcome: false },
   { key: 'climb',          label: 'Climb / Vault',  needsTarget: false, needsOutcome: true  },
+  { key: 'fall',           label: 'Fall',           needsTarget: false, needsOutcome: true  },
   { key: 'charge',         label: 'Charge',         needsTarget: true,  needsOutcome: true  },
   { key: 'diving-charge',  label: 'Diving Charge',  needsTarget: true,  needsOutcome: true  },
   { key: 'fight',          label: 'Fight',          needsTarget: true,  needsOutcome: true  },
@@ -27,8 +28,9 @@ export const ACTIONS = [
 
 export const OUTCOMES = {
   climb:  ['Climbed', 'Vault Failed', 'Fell — Fine', 'Fell — Stunned', 'Fell — OOA'],
+  fall:   ['Fell — Fine', 'Fell — Stunned', 'Fell — OOA'],
   charge: ['Charged', 'Failed Charge'],
-  'diving-charge': ['Diving Charged', 'Failed Dive'],
+  'diving-charge': ['Diving Charged', 'Failed Dive — Fine', 'Failed Dive — Stunned', 'Failed Dive — OOA'],
   fight:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action'],
   shoot:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action'],
   throw:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action'],
@@ -102,9 +104,12 @@ export function makeEventNote({ actorName, actionKey, targetName, outcome }) {
         ? `${actorName} failed to charge${t}`
         : `${actorName} charged${t}`
     case 'diving-charge':
-      return outcome === 'Failed Dive'
-        ? `${actorName} failed a diving charge on${t}`
-        : `${actorName} diving charged${t}`
+      if (outcome === 'Failed Dive — Fine')    return `${actorName} failed a diving charge on${t} — fell fine`
+      if (outcome === 'Failed Dive — Stunned') return `${actorName} failed a diving charge on${t} — fell Stunned`
+      if (outcome === 'Failed Dive — OOA')     return `${actorName} failed a diving charge on${t} — fell Out of Action`
+      return outcome === 'Diving Charged'
+        ? `${actorName} diving charged${t}`
+        : `${actorName} failed a diving charge on${t}`
     case 'fight':  return `${actorName} attacked${t} — ${outcome}`
     case 'shoot':  return `${actorName} shot at${t} — ${outcome}`
     case 'throw':  return `${actorName} threw at${t} — ${outcome}`
@@ -119,6 +124,11 @@ export function makeEventNote({ actorName, actionKey, targetName, outcome }) {
     case 'crawl':  return `${actorName} crawled away`
     case 'standup': return `${actorName} stood up`
     case 'explore': return `${actorName} explored`
+    case 'fall':
+      if (outcome === 'Fell — Fine')    return `${actorName} fell — fine`
+      if (outcome === 'Fell — Stunned') return `${actorName} fell — Stunned`
+      if (outcome === 'Fell — OOA')     return `${actorName} fell — Out of Action`
+      return `${actorName} fell — ${outcome}`
     case 'climb':
       if (outcome === 'Climbed') return `${actorName} climbed`
       if (outcome === 'Vault Failed') return `${actorName} failed to vault`

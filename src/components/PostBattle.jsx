@@ -109,7 +109,7 @@ function getOOAWarriors(battle) {
         if (!ooa.some(w => w.name === event.targetName && w.wbIdx === wbIdx))
           ooa.push({ name: event.targetName, wbIdx })
       }
-      if (event.outcome === 'Fell — OOA' && event.actorName != null) {
+      if ((event.outcome === 'Fell — OOA' || event.outcome === 'Failed Dive — OOA') && event.actorName != null) {
         const wbIdx = event.actorWbIdx
         if (!ooa.some(w => w.name === event.actorName && w.wbIdx === wbIdx))
           ooa.push({ name: event.actorName, wbIdx })
