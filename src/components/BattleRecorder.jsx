@@ -93,7 +93,7 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
       actionKey: 'other',
       targetName: null,
       outcome: null,
-      note: as.otherText.trim(),
+      note: `${as.actor.name}: ${as.otherText.trim()}`,
     }
     onChange(addEventToTurn(battle, event))
     setAs(INITIAL_ACTION)
