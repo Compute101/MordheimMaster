@@ -1878,6 +1878,25 @@ body {
   margin: 0;
 }
 
+/* ─── Recorder header — small screens ────────────────── */
+@media (max-width: 480px) {
+  .rec-header-btns {
+    width: 100%;
+    gap: 5px;
+  }
+  .rec-header-btns .rec-btn {
+    flex: 1;
+    padding: 7px 4px;
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+    text-align: center;
+  }
+  .rec-header-btns .rec-btn--note {
+    flex: none;
+    padding: 7px 10px;
+  }
+}
+
 /* ─── Print styles ────────────────────────────────────── */
 @media print {
   body { background: white; }
