@@ -1061,8 +1061,16 @@ body {
 
 .bn-begin-row {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
   padding: 8px 0 16px;
+}
+
+.bn-error {
+  color: #b94a48;
+  font-size: 0.85rem;
+  text-align: center;
 }
 
 .bn-begin-btn {
