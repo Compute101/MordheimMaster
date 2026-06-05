@@ -119,7 +119,7 @@ function getOOAWarriors(battle) {
   return ooa
 }
 
-export default function PostBattle({ battle, onChange, onSave }) {
+export default function PostBattle({ battle, onChange, onSave, onBack }) {
   const { warbands, postBattle: pb } = battle
 
   const allWarriors = [
@@ -219,6 +219,7 @@ export default function PostBattle({ battle, onChange, onSave }) {
         </div>
 
         <div className="bn-begin-row">
+          {onBack && <button className="bn-back-btn" onClick={onBack}>← Back to Battle</button>}
           <button className="bn-begin-btn" onClick={onSave}>Save Battle</button>
         </div>
 
