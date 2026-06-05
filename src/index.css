@@ -1638,6 +1638,13 @@ body {
   gap: 2px;
 }
 
+.pb-empty {
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 0.82rem;
+  padding: 6px 2px;
+}
+
 .pb-row {
   background: var(--parchment-light);
   border: 1px solid var(--border-light);
