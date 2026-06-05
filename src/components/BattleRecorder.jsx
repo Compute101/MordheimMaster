@@ -304,6 +304,23 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
         {renderWarriorCol(wb1, 1)}
       </div>
 
+      {isPregame && (
+        <div className="rec-firstturn-panel">
+          <div className="rec-firstturn-label">Who goes first?</div>
+          <div className="rec-firstturn-btns">
+            {[wb0, wb1].map((wb, idx) => (
+              <button
+                key={idx}
+                className={`rec-firstturn-btn${(battle.firstWarbandIndex ?? 0) === idx ? ' active' : ''}`}
+                onClick={() => onChange({ ...battle, firstWarbandIndex: idx })}
+              >
+                {wb.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {turnNoteOpen && (
         <div className="rec-action-panel rec-turn-note-panel">
           <div className="rec-ap-actor">
