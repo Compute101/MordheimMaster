@@ -100,6 +100,25 @@ function AdvanceRow({ warrior, wbName, skills, onChange }) {
   )
 }
 
+function getOOAWarriors(battle) {
+  const ooa = []
+  for (const turn of battle.turns) {
+    for (const event of turn.events) {
+      if (event.outcome === 'Out of Action' && event.targetName != null) {
+        const wbIdx = 1 - event.actorWbIdx
+        if (!ooa.some(w => w.name === event.targetName && w.wbIdx === wbIdx))
+          ooa.push({ name: event.targetName, wbIdx })
+      }
+      if (event.outcome === 'Fell — OOA' && event.actorName != null) {
+        const wbIdx = event.actorWbIdx
+        if (!ooa.some(w => w.name === event.actorName && w.wbIdx === wbIdx))
+          ooa.push({ name: event.actorName, wbIdx })
+      }
+    }
+  }
+  return ooa
+}
+
 export default function PostBattle({ battle, onChange, onSave }) {
   const { warbands, postBattle: pb } = battle
 
@@ -107,6 +126,11 @@ export default function PostBattle({ battle, onChange, onSave }) {
     ...warbands[0].warriors.map(w => ({ ...w, wbIdx: 0 })),
     ...warbands[1].warriors.map(w => ({ ...w, wbIdx: 1 })),
   ]
+
+  const ooaList = getOOAWarriors(battle)
+  const ooaWarriors = allWarriors.filter(w =>
+    ooaList.some(o => o.name === w.name && o.wbIdx === w.wbIdx)
+  )
 
   const updatePb = (updates) => {
     onChange({ ...battle, postBattle: { ...pb, ...updates } })
@@ -139,16 +163,18 @@ export default function PostBattle({ battle, onChange, onSave }) {
           </div>
         </div>
 
-        {allWarriors.length > 0 && (
-          <div className="pb-section">
-            <SectionHead num="②" title="Injuries" sub="Roll for each model taken Out of Action" />
+        <div className="pb-section">
+          <SectionHead num="②" title="Injuries" sub="Roll for each model taken Out of Action" />
+          {ooaWarriors.length > 0 ? (
             <div className="pb-row-list">
-              {allWarriors.map((w, i) => (
+              {ooaWarriors.map((w, i) => (
                 <InjuryRow key={i} warrior={w} wbName={warbands[w.wbIdx].name} injuries={pb.injuries} onChange={updatePb} />
               ))}
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="pb-empty">No warriors recorded Out of Action.</div>
+          )}
+        </div>
 
         {allWarriors.length > 0 && (
           <div className="pb-section">
