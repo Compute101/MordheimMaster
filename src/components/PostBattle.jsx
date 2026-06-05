@@ -58,7 +58,7 @@ function XpRow({ warrior, wbName, xpGains, onChange }) {
         <span className="pb-warrior-name">{warrior.name}</span>
         <span className="pb-warrior-wb">{wbName}</span>
       </div>
-      <div className="pb-btns-wrap">
+      <div className="pb-btns-wrap pb-btns-wrap--xp">
         {XP_AMOUNTS.map(n => (
           <button key={n} className={`pb-btn pb-btn--xp${existing?.amount === n ? ' active' : ''}`} onClick={() => set(n)}>+{n}</button>
         ))}
