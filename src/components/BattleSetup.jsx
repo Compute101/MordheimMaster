@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { SCENARIOS, createBattle } from '../utils/battleDefaults'
 
-function WarbandSlot({ index, warbands, slot, onChange }) {
+function WarbandSlot({ index, warbands, slot, takenRosterId, onChange }) {
   const [addWarriorInput, setAddWarriorInput] = useState('')
   const [customMode, setCustomMode] = useState(!slot.rosterId)
 
@@ -68,15 +68,20 @@ function WarbandSlot({ index, warbands, slot, onChange }) {
         <div className="bn-roster-pick">
           <div className="bn-pick-label">From saved roster:</div>
           <div className="bn-roster-chips">
-            {warbands.map(wb => (
-              <button
-                key={wb.id}
-                className={`bn-roster-chip${slot.rosterId === wb.id ? ' active' : ''}`}
-                onClick={() => selectRoster(wb)}
-              >
-                {wb.name || 'Unnamed'} <span className="bn-chip-type">{wb.type}</span>
-              </button>
-            ))}
+            {warbands.map(wb => {
+              const taken = wb.id === takenRosterId
+              return (
+                <button
+                  key={wb.id}
+                  className={`bn-roster-chip${slot.rosterId === wb.id ? ' active' : ''}${taken ? ' taken' : ''}`}
+                  disabled={taken}
+                  onClick={() => selectRoster(wb)}
+                  title={taken ? 'Already selected by the other warband' : undefined}
+                >
+                  {wb.name || 'Unnamed'} <span className="bn-chip-type">{wb.type}</span>
+                </button>
+              )
+            })}
           </div>
         </div>
       )}
@@ -132,11 +137,7 @@ export default function BattleSetup({ warbands, houseRules, onBegin, onBack }) {
     setSlots(prev => prev.map((s, i) => i === idx ? { ...updates } : s))
   }
 
-  const sameRoster =
-    slots[0].rosterId && slots[1].rosterId && slots[0].rosterId === slots[1].rosterId
-
-  const canBegin =
-    slots[0].name.trim() && slots[1].name.trim() && scenario.trim() && !sameRoster
+  const canBegin = slots[0].name.trim() && slots[1].name.trim() && scenario.trim()
 
   const handleBegin = () => {
     const battle = createBattle({
@@ -171,14 +172,11 @@ export default function BattleSetup({ warbands, houseRules, onBegin, onBack }) {
         </div>
 
         <div className="bn-slots-row">
-          <WarbandSlot index={0} warbands={warbands} slot={slots[0]} onChange={s => updateSlot(0, s)} />
-          <WarbandSlot index={1} warbands={warbands} slot={slots[1]} onChange={s => updateSlot(1, s)} />
+          <WarbandSlot index={0} warbands={warbands} slot={slots[0]} takenRosterId={slots[1].rosterId} onChange={s => updateSlot(0, s)} />
+          <WarbandSlot index={1} warbands={warbands} slot={slots[1]} takenRosterId={slots[0].rosterId} onChange={s => updateSlot(1, s)} />
         </div>
 
         <div className="bn-begin-row">
-          {sameRoster && (
-            <div className="bn-error">A warband cannot fight itself — choose a different opponent.</div>
-          )}
           <button
             className="bn-begin-btn"
             disabled={!canBegin}
