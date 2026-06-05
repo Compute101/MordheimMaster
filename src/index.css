@@ -1083,6 +1083,31 @@ body {
 .bn-begin-btn:hover:not(:disabled) { background: var(--border-light); }
 .bn-begin-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+.bn-first-turn-row {
+  display: flex;
+  gap: 8px;
+}
+
+.bn-first-turn-btn {
+  font-family: var(--font-head);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  background: var(--parchment-light);
+  color: var(--ink);
+  border: 1.5px solid var(--border-light);
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.bn-first-turn-btn.active {
+  background: var(--border);
+  color: var(--parchment-light);
+  border-color: var(--border);
+}
+
+.bn-first-turn-btn:hover:not(.active) { border-color: var(--border); }
+
 /* ─── Battle Recorder ─────────────────────────────────── */
 .rec-header {
   display: flex;

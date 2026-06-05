@@ -132,6 +132,7 @@ export default function BattleSetup({ warbands, houseRules, onBegin, onBack }) {
     { rosterId: null, name: '', warriors: [] },
     { rosterId: null, name: '', warriors: [] },
   ])
+  const [firstWarbandIndex, setFirstWarbandIndex] = useState(0)
 
   const updateSlot = (idx, updates) => {
     setSlots(prev => prev.map((s, i) => i === idx ? { ...updates } : s))
@@ -145,6 +146,7 @@ export default function BattleSetup({ warbands, houseRules, onBegin, onBack }) {
       warband0: slots[0],
       warband1: slots[1],
       houseRules: houseRules || '',
+      firstWarbandIndex,
     })
     onBegin(battle)
   }
@@ -169,6 +171,21 @@ export default function BattleSetup({ warbands, houseRules, onBegin, onBack }) {
               <option key={s} value={s}>{s}</option>
             ))}
           </select>
+        </div>
+
+        <div className="bn-section">
+          <div className="bn-section-title">First Turn</div>
+          <div className="bn-first-turn-row">
+            {[0, 1].map(idx => (
+              <button
+                key={idx}
+                className={`bn-first-turn-btn${firstWarbandIndex === idx ? ' active' : ''}`}
+                onClick={() => setFirstWarbandIndex(idx)}
+              >
+                {slots[idx].name.trim() || `Warband ${idx + 1}`}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="bn-slots-row">
