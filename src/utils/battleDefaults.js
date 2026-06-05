@@ -145,7 +145,7 @@ export function makeEventNote({ actorName, actionKey, targetName, outcome }) {
   }
 }
 
-export function createBattle({ scenario, warband0, warband1, houseRules }) {
+export function createBattle({ scenario, warband0, warband1, houseRules, firstWarbandIndex = 0 }) {
   return {
     id: crypto.randomUUID(),
     date: new Date().toISOString(),
@@ -153,6 +153,7 @@ export function createBattle({ scenario, warband0, warband1, houseRules }) {
     houseRules: houseRules || '',
     warbands: [warband0, warband1],
     turns: [],
+    firstWarbandIndex,
     currentTurn: 0,          // 0 = pre-game phase
     currentWarbandIndex: -1, // -1 = pre-game (no active warband)
     postBattle: {

@@ -171,11 +171,12 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
     setAs(INITIAL_ACTION)
     setTurnNoteOpen(false)
     setTurnNote('')
+    const firstWbIdx = battle.firstWarbandIndex ?? 0
     if (isPregame) {
-      onChange({ ...battle, currentTurn: 1, currentWarbandIndex: 0 })
+      onChange({ ...battle, currentTurn: 1, currentWarbandIndex: firstWbIdx })
     } else {
       const nextWbIdx = battle.currentWarbandIndex === 0 ? 1 : 0
-      const nextTurn = battle.currentWarbandIndex === 1 ? battle.currentTurn + 1 : battle.currentTurn
+      const nextTurn = battle.currentWarbandIndex !== firstWbIdx ? battle.currentTurn + 1 : battle.currentTurn
       onChange({ ...battle, currentWarbandIndex: nextWbIdx, currentTurn: nextTurn })
     }
   }
@@ -185,12 +186,14 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
     setTurnNoteOpen(false)
     setTurnNote('')
     if (isPregame) return
-    if (battle.currentTurn === 1 && battle.currentWarbandIndex === 0) {
+    const firstWbIdx = battle.firstWarbandIndex ?? 0
+    const secondWbIdx = firstWbIdx === 0 ? 1 : 0
+    if (battle.currentTurn === 1 && battle.currentWarbandIndex === firstWbIdx) {
       onChange({ ...battle, currentTurn: 0, currentWarbandIndex: -1 })
-    } else if (battle.currentWarbandIndex === 0) {
-      onChange({ ...battle, currentTurn: battle.currentTurn - 1, currentWarbandIndex: 1 })
+    } else if (battle.currentWarbandIndex === firstWbIdx) {
+      onChange({ ...battle, currentTurn: battle.currentTurn - 1, currentWarbandIndex: secondWbIdx })
     } else {
-      onChange({ ...battle, currentWarbandIndex: 0 })
+      onChange({ ...battle, currentWarbandIndex: firstWbIdx })
     }
   }
 
@@ -300,6 +303,23 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
         <div className="rec-col-divider" />
         {renderWarriorCol(wb1, 1)}
       </div>
+
+      {isPregame && (
+        <div className="rec-firstturn-panel">
+          <div className="rec-firstturn-label">Who goes first?</div>
+          <div className="rec-firstturn-btns">
+            {[wb0, wb1].map((wb, idx) => (
+              <button
+                key={idx}
+                className={`rec-firstturn-btn${(battle.firstWarbandIndex ?? 0) === idx ? ' active' : ''}`}
+                onClick={() => onChange({ ...battle, firstWarbandIndex: idx })}
+              >
+                {wb.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {turnNoteOpen && (
         <div className="rec-action-panel rec-turn-note-panel">

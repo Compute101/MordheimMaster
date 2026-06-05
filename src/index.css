@@ -1210,6 +1210,50 @@ body {
   flex-shrink: 0;
 }
 
+.rec-firstturn-panel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--parchment-light);
+  border-top: 1px solid var(--border-light);
+}
+
+.rec-firstturn-label {
+  font-family: var(--font-head);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--border);
+  white-space: nowrap;
+}
+
+.rec-firstturn-btns {
+  display: flex;
+  gap: 6px;
+}
+
+.rec-firstturn-btn {
+  font-family: var(--font-head);
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  background: transparent;
+  color: var(--ink);
+  border: 1.5px solid var(--border-light);
+  padding: 5px 16px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.rec-firstturn-btn.active {
+  background: var(--border);
+  color: var(--parchment-light);
+  border-color: var(--border);
+}
+
+.rec-firstturn-btn:hover:not(.active) { border-color: var(--border); }
+
 .rec-col-title {
   font-family: var(--font-head);
   font-size: 0.65rem;
