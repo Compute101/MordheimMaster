@@ -1163,6 +1163,14 @@ body {
   border-color: var(--gold);
 }
 
+.rec-btn--prev {
+  background: var(--parchment-dark);
+  color: var(--ink-mid);
+  border-color: var(--border-light);
+}
+
+.rec-btn--prev:hover { background: var(--parchment); color: var(--ink); }
+
 .rec-btn--end {
   background: var(--red);
   color: var(--parchment-light);
@@ -1458,6 +1466,85 @@ body {
 }
 
 .rec-log-event--note::before { content: none; }
+
+.rec-log-event-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.rec-log-event-row .rec-log-event {
+  flex: 1;
+  min-width: 0;
+}
+
+.rec-log-event-actions {
+  display: none;
+  align-items: center;
+  gap: 1px;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+
+.rec-log-event-row:hover .rec-log-event-actions {
+  display: flex;
+}
+
+.rec-log-event-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.78rem;
+  padding: 1px 4px;
+  color: var(--ink-mid);
+  opacity: 0.55;
+  line-height: 1;
+  border-radius: 2px;
+}
+
+.rec-log-event-btn:hover {
+  opacity: 1;
+  background: var(--parchment-dark);
+}
+
+.rec-log-event-btn--del:hover {
+  color: #a00;
+}
+
+.rec-log-event-edit {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.rec-log-edit-input {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  border: 1px solid var(--border);
+  background: var(--parchment);
+  padding: 2px 5px;
+  color: var(--ink);
+  border-radius: 2px;
+}
+
+.rec-log-edit-save,
+.rec-log-edit-cancel {
+  background: none;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 0.78rem;
+  padding: 1px 5px;
+  color: var(--ink);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.rec-log-edit-save:hover { background: var(--parchment-dark); }
+.rec-log-edit-cancel:hover { background: var(--parchment-dark); }
 
 /* ─── Post Battle ─────────────────────────────────────── */
 
