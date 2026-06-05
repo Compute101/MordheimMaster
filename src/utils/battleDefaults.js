@@ -16,6 +16,7 @@ export const ACTIONS = [
   { key: 'throw',          label: 'Throw',          needsTarget: true,  needsOutcome: true  },
   { key: 'cast',           label: 'Cast Spell',     needsTarget: true,  needsOutcome: true  },
   { key: 'goad',           label: 'Goad',           needsTarget: true,  needsOutcome: true  },
+  { key: 'hide',           label: 'Hide',           needsTarget: false, needsOutcome: false },
   { key: 'flee',           label: 'Flee',           needsTarget: false, needsOutcome: false },
   { key: 'broken',         label: 'Broken',         needsTarget: false, needsOutcome: false },
   { key: 'rout',           label: 'Voluntary Rout', needsTarget: false, needsOutcome: false },
@@ -125,6 +126,7 @@ export function makeEventNote({ actorName, actionKey, targetName, outcome }) {
       if (outcome === 'Fell — Stunned') return `${actorName} fell — Stunned`
       if (outcome === 'Fell — OOA') return `${actorName} fell — Out of Action`
       return `${actorName} climbed — ${outcome}`
+    case 'hide':   return `${actorName} hid`
     case 'flee':   return `${actorName} fled`
     case 'broken': return `${actorName} broke and fled`
     case 'rout':   return `${actorName} voluntarily routed`
