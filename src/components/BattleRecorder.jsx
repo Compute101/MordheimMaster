@@ -29,6 +29,7 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
   const [logOpen, setLogOpen] = useState(false)
   const [turnNote, setTurnNote] = useState('')
   const [turnNoteOpen, setTurnNoteOpen] = useState(false)
+  const [editingEvent, setEditingEvent] = useState(null) // { turnId, eventId, text }
 
   const wb0 = battle.warbands[0]
   const wb1 = battle.warbands[1]
@@ -179,6 +180,38 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
     }
   }
 
+  const handlePrevTurn = () => {
+    setAs(INITIAL_ACTION)
+    setTurnNoteOpen(false)
+    setTurnNote('')
+    if (isPregame) return
+    if (battle.currentTurn === 1 && battle.currentWarbandIndex === 0) {
+      onChange({ ...battle, currentTurn: 0, currentWarbandIndex: -1 })
+    } else if (battle.currentWarbandIndex === 0) {
+      onChange({ ...battle, currentTurn: battle.currentTurn - 1, currentWarbandIndex: 1 })
+    } else {
+      onChange({ ...battle, currentWarbandIndex: 0 })
+    }
+  }
+
+  const deleteEvent = (turnId, eventId) => {
+    const turns = battle.turns
+      .map(t => t.id === turnId ? { ...t, events: t.events.filter(e => e.id !== eventId) } : t)
+      .filter(t => t.events.length > 0)
+    onChange({ ...battle, turns })
+  }
+
+  const saveEditEvent = () => {
+    if (!editingEvent || !editingEvent.text.trim()) return
+    const turns = battle.turns.map(t =>
+      t.id === editingEvent.turnId
+        ? { ...t, events: t.events.map(e => e.id === editingEvent.eventId ? { ...e, note: editingEvent.text.trim() } : e) }
+        : t
+    )
+    onChange({ ...battle, turns })
+    setEditingEvent(null)
+  }
+
   const totalEvents = battle.turns.reduce((n, t) => n + t.events.length, 0)
 
   const renderWarriorCol = (wb, wbIdx) => {
@@ -246,6 +279,11 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
           >
             📝
           </button>
+          {!isPregame && (
+            <button className="rec-btn rec-btn--prev" onClick={handlePrevTurn} title="Return to previous turn phase">
+              ← Prev
+            </button>
+          )}
           <button className="rec-btn rec-btn--turn" onClick={handleEndTurn}>
             {isPregame ? 'Begin Turn 1 →' : 'End Turn →'}
           </button>
@@ -461,8 +499,41 @@ export default function BattleRecorder({ battle, onChange, onEndBattle }) {
                       : `Turn ${turn.turnNumber} — ${battle.warbands[turn.warbandIndex]?.name || ''}`}
                   </div>
                   {turn.events.map(e => (
-                    <div key={e.id} className={`rec-log-event${e.actorName === null ? ' rec-log-event--note' : ''}`}>
-                      {e.note}
+                    <div key={e.id} className="rec-log-event-row">
+                      {editingEvent?.eventId === e.id ? (
+                        <div className="rec-log-event-edit">
+                          <input
+                            className="rec-log-edit-input"
+                            value={editingEvent.text}
+                            autoFocus
+                            onChange={ev => setEditingEvent(prev => ({ ...prev, text: ev.target.value }))}
+                            onKeyDown={ev => {
+                              if (ev.key === 'Enter') saveEditEvent()
+                              if (ev.key === 'Escape') setEditingEvent(null)
+                            }}
+                          />
+                          <button className="rec-log-edit-save" onClick={saveEditEvent} title="Save">✓</button>
+                          <button className="rec-log-edit-cancel" onClick={() => setEditingEvent(null)} title="Cancel">✕</button>
+                        </div>
+                      ) : (
+                        <>
+                          <div className={`rec-log-event${e.actorName === null ? ' rec-log-event--note' : ''}`}>
+                            {e.note}
+                          </div>
+                          <div className="rec-log-event-actions">
+                            <button
+                              className="rec-log-event-btn"
+                              title="Edit"
+                              onClick={() => setEditingEvent({ turnId: turn.id, eventId: e.id, text: e.note })}
+                            >✏</button>
+                            <button
+                              className="rec-log-event-btn rec-log-event-btn--del"
+                              title="Delete"
+                              onClick={() => deleteEvent(turn.id, e.id)}
+                            >×</button>
+                          </div>
+                        </>
+                      )}
                     </div>
                   ))}
                 </div>
