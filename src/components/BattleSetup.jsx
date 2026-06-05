@@ -132,7 +132,11 @@ export default function BattleSetup({ warbands, houseRules, onBegin, onBack }) {
     setSlots(prev => prev.map((s, i) => i === idx ? { ...updates } : s))
   }
 
-  const canBegin = slots[0].name.trim() && slots[1].name.trim() && scenario.trim()
+  const sameRoster =
+    slots[0].rosterId && slots[1].rosterId && slots[0].rosterId === slots[1].rosterId
+
+  const canBegin =
+    slots[0].name.trim() && slots[1].name.trim() && scenario.trim() && !sameRoster
 
   const handleBegin = () => {
     const battle = createBattle({
@@ -172,6 +176,9 @@ export default function BattleSetup({ warbands, houseRules, onBegin, onBack }) {
         </div>
 
         <div className="bn-begin-row">
+          {sameRoster && (
+            <div className="bn-error">A warband cannot fight itself — choose a different opponent.</div>
+          )}
           <button
             className="bn-begin-btn"
             disabled={!canBegin}
