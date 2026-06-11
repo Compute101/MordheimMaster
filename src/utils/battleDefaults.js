@@ -8,7 +8,8 @@ export const ACTIONS = [
   { key: 'run',            label: 'Run',            needsTarget: false, needsOutcome: false },
   { key: 'crawl',          label: 'Crawl Away',     needsTarget: false, needsOutcome: false },
   { key: 'standup',        label: 'Stand Up',       needsTarget: false, needsOutcome: false },
-  { key: 'climb',          label: 'Climb / Vault',  needsTarget: false, needsOutcome: true  },
+  { key: 'climb',          label: 'Climb',          needsTarget: false, needsOutcome: true  },
+  { key: 'jump-down',      label: 'Jump Down',      needsTarget: false, needsOutcome: true  },
   { key: 'fall',           label: 'Fall',           needsTarget: false, needsOutcome: true  },
   { key: 'charge',         label: 'Charge',         needsTarget: true,  needsOutcome: true  },
   { key: 'diving-charge',  label: 'Diving Charge',  needsTarget: true,  needsOutcome: true  },
@@ -27,10 +28,11 @@ export const ACTIONS = [
 ]
 
 export const OUTCOMES = {
-  climb:  ['Climbed', 'Vault Failed', 'Fell — Fine', 'Fell — Stunned', 'Fell — OOA'],
-  fall:   ['Fell — Fine', 'Fell — Stunned', 'Fell — OOA'],
+  climb:  ['Climbed', 'Failed to Climb'],
+  'jump-down': ['Jumped Down', 'Fell — Fine', 'Fell — Knocked Down', 'Fell — Stunned', 'Fell — OOA'],
+  fall:   ['Fell — Fine', 'Fell — Knocked Down', 'Fell — Stunned', 'Fell — OOA'],
   charge: ['Charged', 'Failed Charge'],
-  'diving-charge': ['Diving Charged', 'Failed Dive — Fine', 'Failed Dive — Stunned', 'Failed Dive — OOA'],
+  'diving-charge': ['Diving Charged', 'Failed Dive — Fine', 'Failed Dive — Knocked Down', 'Failed Dive — Stunned', 'Failed Dive — OOA'],
   fight:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action'],
   shoot:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action'],
   throw:  ['Miss', 'Flesh Wound', 'Knock Down', 'Stunned', 'Out of Action'],
@@ -104,9 +106,10 @@ export function makeEventNote({ actorName, actionKey, targetName, outcome }) {
         ? `${actorName} failed to charge${t}`
         : `${actorName} charged${t}`
     case 'diving-charge':
-      if (outcome === 'Failed Dive — Fine')    return `${actorName} failed a diving charge on${t} — fell fine`
-      if (outcome === 'Failed Dive — Stunned') return `${actorName} failed a diving charge on${t} — fell Stunned`
-      if (outcome === 'Failed Dive — OOA')     return `${actorName} failed a diving charge on${t} — fell Out of Action`
+      if (outcome === 'Failed Dive — Fine')        return `${actorName} failed a diving charge on${t} — fell fine`
+      if (outcome === 'Failed Dive — Knocked Down') return `${actorName} failed a diving charge on${t} — fell, Knocked Down`
+      if (outcome === 'Failed Dive — Stunned')     return `${actorName} failed a diving charge on${t} — fell Stunned`
+      if (outcome === 'Failed Dive — OOA')         return `${actorName} failed a diving charge on${t} — fell Out of Action`
       return outcome === 'Diving Charged'
         ? `${actorName} diving charged${t}`
         : `${actorName} failed a diving charge on${t}`
@@ -125,17 +128,22 @@ export function makeEventNote({ actorName, actionKey, targetName, outcome }) {
     case 'standup': return `${actorName} stood up`
     case 'explore': return `${actorName} explored`
     case 'fall':
-      if (outcome === 'Fell — Fine')    return `${actorName} fell — fine`
-      if (outcome === 'Fell — Stunned') return `${actorName} fell — Stunned`
-      if (outcome === 'Fell — OOA')     return `${actorName} fell — Out of Action`
+      if (outcome === 'Fell — Fine')        return `${actorName} fell — fine`
+      if (outcome === 'Fell — Knocked Down') return `${actorName} fell — Knocked Down`
+      if (outcome === 'Fell — Stunned')     return `${actorName} fell — Stunned`
+      if (outcome === 'Fell — OOA')         return `${actorName} fell — Out of Action`
       return `${actorName} fell — ${outcome}`
     case 'climb':
       if (outcome === 'Climbed') return `${actorName} climbed`
-      if (outcome === 'Vault Failed') return `${actorName} failed to vault`
-      if (outcome === 'Fell — Fine') return `${actorName} fell — fine`
-      if (outcome === 'Fell — Stunned') return `${actorName} fell — Stunned`
-      if (outcome === 'Fell — OOA') return `${actorName} fell — Out of Action`
+      if (outcome === 'Failed to Climb') return `${actorName} failed to climb`
       return `${actorName} climbed — ${outcome}`
+    case 'jump-down':
+      if (outcome === 'Jumped Down')        return `${actorName} jumped down`
+      if (outcome === 'Fell — Fine')        return `${actorName} jumped down — fell, fine`
+      if (outcome === 'Fell — Knocked Down') return `${actorName} jumped down — fell, Knocked Down`
+      if (outcome === 'Fell — Stunned')     return `${actorName} jumped down — fell, Stunned`
+      if (outcome === 'Fell — OOA')         return `${actorName} jumped down — fell, Out of Action`
+      return `${actorName} jumped down — ${outcome}`
     case 'hide':   return `${actorName} hid`
     case 'flee':   return `${actorName} fled`
     case 'broken': return `${actorName} broke and fled`
