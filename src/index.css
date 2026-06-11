@@ -1212,8 +1212,8 @@ body {
 
 .rec-firstturn-panel {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  gap: 8px;
   padding: 10px 14px;
   background: var(--parchment-light);
   border-top: 1px solid var(--border-light);
