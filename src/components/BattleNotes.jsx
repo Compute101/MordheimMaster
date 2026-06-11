@@ -165,6 +165,7 @@ export default function BattleNotes({ warbands, houseRules, onBack }) {
         battle={activeBattle}
         onChange={handleBattleChange}
         onSave={handleSave}
+        onBack={() => setPhase('battle')}
       />
     )
   }
